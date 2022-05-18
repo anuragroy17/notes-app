@@ -46,8 +46,7 @@ const signInWithGoogle = async () => {
       });
     }
   } catch (err) {
-    console.error(err);
-    alert(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -82,8 +81,12 @@ const sendPasswordReset = async (email) => {
   }
 };
 
-const logout = () => {
-  signOut(auth);
+const logout = async () => {
+  try {
+    await signOut(auth);
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 export {

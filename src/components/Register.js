@@ -6,7 +6,6 @@ import {
   registerWithEmailAndPassword,
   signInWithGoogle,
 } from '../firebase';
-import './Register.css';
 import { Button, Card, Form, Alert } from 'react-bootstrap';
 
 function Register() {
@@ -28,7 +27,7 @@ function Register() {
       await registerWithEmailAndPassword(name, email, password);
     } catch (err) {
       setError('Failed to create an account');
-      console.log(err.message);
+      console.log(err);
     }
   };
 

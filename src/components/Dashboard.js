@@ -14,7 +14,7 @@ function Dashboard() {
 
   const setUserName = () => {
     setName(user?.displayName);
-    if (!name) {
+    if (!user?.displayName) {
       fetchUserName();
     }
   };
@@ -28,6 +28,7 @@ function Dashboard() {
       const data = doc.docs[0].data();
       setName(data.name);
     } catch (err) {
+      console.log(err);
       setError('An error occured while fetching user data');
     }
   };
@@ -37,7 +38,8 @@ function Dashboard() {
 
     try {
       await logout();
-    } catch {
+    } catch (err) {
+      console.log(err);
       setError('Failed to log out');
     }
   };

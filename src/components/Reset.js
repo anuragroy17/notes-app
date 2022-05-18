@@ -3,7 +3,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { auth, sendPasswordReset } from '../firebase';
-import './Reset.css';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
 
 function Reset() {
@@ -19,7 +18,8 @@ function Reset() {
       setError('');
       await sendPasswordReset(email);
       setMessage('Check your inbox for further instructions');
-    } catch {
+    } catch (err) {
+      console.log(err);
       setError('Failed to reset password');
     }
   };

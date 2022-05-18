@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, logInWithEmailAndPassword, signInWithGoogle } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import './Login.css';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
 
 function Login() {
@@ -16,8 +15,19 @@ function Login() {
     try {
       setError('');
       await logInWithEmailAndPassword(email, password);
-    } catch {
+    } catch (err) {
+      console.log(err);
       setError('Failed to log in');
+    }
+  };
+
+  const googleOAuth = async () => {
+    try {
+      setError('');
+      await signInWithGoogle();
+    } catch (err) {
+      console.log(err);
+      setError('Error in google sign in!');
     }
   };
 
@@ -61,7 +71,7 @@ function Login() {
               variant="dark"
               disabled={loading}
               className="w-100 mt-3"
-              onClick={signInWithGoogle}
+              onClick={googleOAuth}
             >
               Login with Google
             </Button>
@@ -75,39 +85,6 @@ function Login() {
         Need an account? <Link to="/register">Register</Link> now.
       </div>
     </>
-    // <div className="login">
-    //   <div className="login__container">
-    //     <input
-    //       type="text"
-    //       className="login__textBox"
-    //       value={email}
-    //       onChange={(e) => setEmail(e.target.value)}
-    //       placeholder="E-mail Address"
-    //     />
-    //     <input
-    //       type="password"
-    //       className="login__textBox"
-    //       value={password}
-    //       onChange={(e) => setPassword(e.target.value)}
-    //       placeholder="Password"
-    //     />
-    //     <button
-    //       className="login__btn"
-    //       onClick={() => logInWithEmailAndPassword(email, password)}
-    //     >
-    //       Login
-    //     </button>
-    //     <button className="login__btn login__google" onClick={signInWithGoogle}>
-    //       Login with Google
-    //     </button>
-    //     <div>
-    //       <Link to="/reset">Forgot Password</Link>
-    //     </div>
-    //     <div>
-    //       Don't have an account? <Link to="/register">Register</Link> now.
-    //     </div>
-    //   </div>
-    // </div>
   );
 }
 
