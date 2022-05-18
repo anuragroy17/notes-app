@@ -4,41 +4,65 @@ import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import { auth, db, logout } from '../firebase';
 import { query, collection, getDocs, where } from 'firebase/firestore';
+import { Card, Button, Alert } from 'react-bootstrap';
 
 function Dashboard() {
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const setUserName = () => {
+    setName(user?.displayName);
+    if (!name) {
+      fetchUserName();
+    }
+  };
+
   const fetchUserName = async () => {
+    setError('');
+
     try {
       const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
       const doc = await getDocs(q);
       const data = doc.docs[0].data();
       setName(data.name);
     } catch (err) {
-      console.error(err);
-      alert('An error occured while fetching user data');
+      setError('An error occured while fetching user data');
+    }
+  };
+
+  const handleLogout = async () => {
+    setError('');
+
+    try {
+      await logout();
+    } catch {
+      setError('Failed to log out');
     }
   };
 
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate('/');
-    fetchUserName();
-  }, [user, loading]);
+    setUserName();
+  }, [user, loading, navigate]);
 
   return (
-    <div className="dashboard">
-      <div className="dashboard__container">
-        Logged in as
-        <div>{name}</div>
-        <div>{user?.email}</div>
-        <button className="dashboard__btn" onClick={logout}>
-          Logout
-        </button>
+    <>
+      <Card>
+        <Card.Body>
+          <h2 className="text-center mb-4">Profile</h2>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <strong>Name:</strong> {name}
+        </Card.Body>
+      </Card>
+      <div className="w-100 text-center mt-2">
+        <Button variant="link" onClick={handleLogout}>
+          Log Out
+        </Button>
       </div>
-    </div>
+    </>
   );
 }
 
