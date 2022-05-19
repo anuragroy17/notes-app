@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link, useNavigate } from 'react-router-dom';
+import { auth, registerWithEmailAndPassword } from '../firebase';
 import {
-  auth,
-  registerWithEmailAndPassword,
-  signInWithGoogle,
-} from '../firebase';
-import { Button, Card, Form, Alert } from 'react-bootstrap';
+  Typography,
+  Alert,
+  Box,
+  TextField,
+  Grid,
+  Button,
+  Avatar,
+} from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -18,10 +23,8 @@ function Register() {
   const navigate = useNavigate();
 
   const register = async () => {
-    if (!name) alert('Please enter name');
-    if (password !== passwordConfirm) {
-      return setError('Passwords do not match');
-    }
+    if (!name) return setError('Please enter name');
+    if (password !== passwordConfirm) return setError('Passwords do not match');
     try {
       setError('');
       await registerWithEmailAndPassword(name, email, password);
@@ -37,62 +40,97 @@ function Register() {
   }, [user, loading, navigate]);
 
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Sign Up</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form>
-            <Form.Group id="name">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Form.Group id="email" className="mt-2">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Form.Group id="password" className="mt-2">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Form.Group id="password-confirm" className="mt-2">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control
-                type="password"
-                value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Button
-              disabled={loading}
-              className="w-100 mt-3"
-              onClick={register}
-            >
-              Sign Up
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2">
-        Already have an account? <Link to="/">Login</Link> now.
-      </div>
-    </>
+    <Box
+      sx={{
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Avatar sx={{ m: 1, bgcolor: '#FBBC04' }}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Sign Up
+      </Typography>
+      {error && (
+        <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="error">
+          {error}
+        </Alert>
+      )}
+      <Box component="form" noValidate sx={{ mt: 1 }}>
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          size="small"
+          id="name"
+          label="Name"
+          name="name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          autoFocus
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          size="small"
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          size="small"
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          size="small"
+          name="password-confirm"
+          label="Confirm Password"
+          type="password"
+          id="password-confirm"
+          value={passwordConfirm}
+          onChange={(e) => setPasswordConfirm(e.target.value)}
+          autoComplete="current-password"
+        />
+        <Button
+          fullWidth
+          variant="contained"
+          disabled={loading}
+          onClick={register}
+          sx={{ mt: 2, mb: 2 }}
+          disableElevation
+        >
+          Sign Up
+        </Button>
+        <Grid container>
+          <Grid item>
+            Already have an account?&nbsp;
+            <Link to="/">Login</Link> now.
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 }
 
