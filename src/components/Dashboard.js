@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import { auth, db, logout } from '../firebase';
 import { query, collection, getDocs, where } from 'firebase/firestore';
-import { Card, Button, Alert } from 'react-bootstrap';
+import { Typography, Alert, Box, Grid, Button } from '@mui/material';
 
 function Dashboard() {
   const [user, loading] = useAuthState(auth);
@@ -51,20 +51,41 @@ function Dashboard() {
   }, [user, loading, navigate]);
 
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Profile</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
+    <Box
+      sx={{
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Typography component="h1" variant="h5">
+        Profile
+      </Typography>
+      {error && (
+        <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="error">
+          {error}
+        </Alert>
+      )}
+      <Grid container>
+        <Grid item>
           <strong>Name:</strong> {name}
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2">
-        <Button variant="link" onClick={handleLogout}>
+        </Grid>
+      </Grid>
+      <Box component="form" noValidate sx={{ mt: 1 }}>
+        <Button
+          fullWidth
+          variant="contained"
+          disabled={loading}
+          onClick={handleLogout}
+          sx={{ mt: 2, mb: 2 }}
+          disableElevation
+        >
           Log Out
         </Button>
-      </div>
-    </>
+      </Box>
+    </Box>
   );
 }
 

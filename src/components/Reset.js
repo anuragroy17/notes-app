@@ -3,7 +3,16 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { auth, sendPasswordReset } from '../firebase';
-import { Form, Button, Card, Alert } from 'react-bootstrap';
+import {
+  Typography,
+  Alert,
+  Box,
+  TextField,
+  Grid,
+  Button,
+  Avatar,
+} from '@mui/material';
+import LockResetIcon from '@mui/icons-material/LockReset';
 
 function Reset() {
   const [email, setEmail] = useState('');
@@ -30,35 +39,63 @@ function Reset() {
   }, [user, loading, navigate]);
 
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Password Reset</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {message && <Alert variant="success">{message}</Alert>}
-          <Form>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Button disabled={loading} className="w-100 mt-3" onClick={reset}>
-              Reset Password
-            </Button>
-          </Form>
-          <div className="w-100 text-center mt-3">
-            <Link to="/">Login</Link>
-          </div>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2">
-        Need an account? <Link to="/register">Register</Link> now.
-      </div>
-    </>
+    <Box
+      sx={{
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Avatar sx={{ m: 1, bgcolor: '#FBBC04' }}>
+        <LockResetIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Password Reset
+      </Typography>
+      {error && (
+        <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="error">
+          {error}
+        </Alert>
+      )}
+      {message && (
+        <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="success">
+          {message}
+        </Alert>
+      )}
+      <Box component="form" noValidate sx={{ mt: 1 }}>
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          size="small"
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoFocus
+        />
+        <Button
+          fullWidth
+          variant="contained"
+          disabled={loading}
+          onClick={reset}
+          sx={{ mt: 2, mb: 2 }}
+          disableElevation
+        >
+          Reset Password
+        </Button>
+        <Grid container>
+          <Grid item>
+            Need an account? <Link to="/register">Register</Link> now.
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 }
 
