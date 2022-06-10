@@ -4,7 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import './Dashboard.scss';
 import { auth, db, logout } from '../../firebase';
 import { query, collection, getDocs, where } from 'firebase/firestore';
-import { Typography, Alert, Box, Grid, Button } from '@mui/material';
+import {
+  Typography,
+  Alert,
+  Box,
+  Grid,
+  Button,
+  CssBaseline,
+} from '@mui/material';
+import { DrawerHeader } from '../../shared/constants';
 
 const Dashboard = () => {
   const [user, loading] = useAuthState(auth);
@@ -57,6 +65,8 @@ const Dashboard = () => {
         justifyContent: 'center',
       }}
     >
+      <CssBaseline />
+      <DrawerHeader />
       <Typography component="h1" variant="h5">
         Profile
       </Typography>
