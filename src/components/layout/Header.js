@@ -123,8 +123,9 @@ const Header = () => {
                 onClick={handleMenu}
                 color="inherit"
               >
-                {/* <AccountCircle /> */}
-                <Avatar alt={name} src={user?.photoURL} />
+                {!user?.photoURL && <AccountCircle />}
+
+                {user?.photoURL && <Avatar alt={name} src={user?.photoURL} />}
               </IconButton>
             </Tooltip>
             <Menu

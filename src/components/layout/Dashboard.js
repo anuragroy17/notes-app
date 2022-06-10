@@ -13,6 +13,8 @@ import {
   CssBaseline,
 } from '@mui/material';
 import { DrawerHeader } from '../../shared/ui-themes';
+import { Notes } from '@mui/icons-material';
+import Note from './notes/Note';
 
 const Dashboard = () => {
   const [user, loading] = useAuthState(auth);
@@ -64,59 +66,32 @@ const Dashboard = () => {
     >
       <CssBaseline />
       <DrawerHeader />
-      <Typography paragraph>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus
-        non enim praesent elementum facilisis leo vel. Risus at ultrices mi
-        tempus imperdiet. Semper risus in hendrerit gravida rutrum quisque non
-        tellus. Convallis convallis tellus id interdum velit laoreet id donec
-        ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl
-        suscipit adipiscing bibendum est ultricies integer quis. Cursus euismod
-        quis viverra nibh cras. Metus vulputate eu scelerisque felis imperdiet
-        proin fermentum leo. Mauris commodo quis imperdiet massa tincidunt. Cras
-        tincidunt lobortis feugiat vivamus at augue. At augue eget arcu dictum
-        varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt.
-        Lorem donec massa sapien faucibus et molestie ac.
-      </Typography>
-      <Typography paragraph>
-        Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-        ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar elementum
-        integer enim neque volutpat ac tincidunt. Ornare suspendisse sed nisi
-        lacus sed viverra tellus. Purus sit amet volutpat consequat mauris.
-        Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
-        vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra
-        accumsan in. In hendrerit gravida rutrum quisque non tellus orci ac.
-        Pellentesque nec nam aliquam sem et tortor. Habitant morbi tristique
-        senectus et. Adipiscing elit duis tristique sollicitudin nibh sit.
-        Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra
-        maecenas accumsan lacus vel facilisis. Nulla posuere sollicitudin
-        aliquam ultrices sagittis orci a.
-      </Typography>
-      {/* <Typography component="h1" variant="h5">
-        Profile
-      </Typography>
-      {error && (
-        <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="error">
-          {error}
-        </Alert>
-      )}
-      <Grid container>
-        <Grid item>
-          <strong>Name:</strong> {name}
-        </Grid>
-      </Grid>
-      <Box component="form" noValidate sx={{ mt: 1 }}>
-        <Button
-          fullWidth
-          variant="contained"
-          disabled={loading}
-          onClick={handleLogout}
-          sx={{ mt: 2, mb: 2 }}
-          disableElevation
-        >
-          Log Out
-        </Button>
-      </Box> */}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill,minmax(auto,220px))',
+          justifyContent: 'space-evenly',
+          gridColumnGap: '10px',
+        }}
+      >
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+      </Box>
     </Box>
   );
 };
