@@ -12,6 +12,7 @@ import {
   Avatar,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LoginContainer from '../UI/LoginContainer';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -40,15 +41,7 @@ const Register = () => {
   }, [user, loading, navigate]);
 
   return (
-    <Box
-      sx={{
-        marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <LoginContainer>
       <Avatar sx={{ m: 1, bgcolor: '#FBBC04' }}>
         <LockOutlinedIcon />
       </Avatar>
@@ -132,7 +125,7 @@ const Register = () => {
           </Grid>
         </Grid>
       </Box>
-    </Box>
+    </LoginContainer>
   );
 };
 

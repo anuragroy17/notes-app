@@ -7,7 +7,7 @@ import { Container, CssBaseline } from '@mui/material';
 
 const App = () => {
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main">
       <CssBaseline />
       <Router>
         <Routes>

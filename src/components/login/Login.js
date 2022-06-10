@@ -14,9 +14,11 @@ import {
   Grid,
   Button,
   Avatar,
+  Container,
 } from '@mui/material';
 import { Google } from '@mui/icons-material';
 import LoginIcon from '@mui/icons-material/Login';
+import LoginContainer from '../UI/LoginContainer';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -54,15 +56,7 @@ const Login = () => {
   }, [user, loading, navigate]);
 
   return (
-    <Box
-      sx={{
-        marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <LoginContainer>
       <Avatar sx={{ m: 1, bgcolor: '#FBBC04' }}>
         <LoginIcon />
       </Avatar>
@@ -136,7 +130,7 @@ const Login = () => {
           </Grid>
         </Grid>
       </Box>
-    </Box>
+    </LoginContainer>
   );
 };
 

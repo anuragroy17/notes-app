@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Dashboard from './Dashboard';
 import Header from './Header';
-import { Container } from '@mui/material';
+import { Container, Box, CssBaseline } from '@mui/material';
 import SideDrawer from './SideDrawer';
 import MenuOpenContext from '../../context/menu-open-context';
 
@@ -17,14 +17,8 @@ const Layout = () => {
   };
 
   return (
-    <Container
-      maxwidth="sm"
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-      }}
-    >
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
       <MenuOpenContext.Provider
         value={{
           open: open,
@@ -36,7 +30,7 @@ const Layout = () => {
         <SideDrawer />
         <Dashboard />
       </MenuOpenContext.Provider>
-    </Container>
+    </Box>
   );
 };
 
