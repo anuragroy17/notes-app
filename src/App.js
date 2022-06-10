@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './Login.js';
-import Register from './Register';
-import Reset from './Reset';
-import Dashboard from './Dashboard';
+import Login from './components/login/Login.js';
+import Register from './components/login/Register';
+import Reset from './components/login/Reset';
+import Dashboard from './components/layout/Dashboard';
 import { Container, CssBaseline } from '@mui/material';
 
-function App() {
+const App = () => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -19,6 +19,6 @@ function App() {
       </Router>
     </Container>
   );
-}
+};
 
 export default App;

@@ -1,37 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
-import './Dashboard.css';
-import { auth, db, logout } from '../firebase';
+import './Dashboard.scss';
+import { auth, db, logout } from '../../firebase';
 import { query, collection, getDocs, where } from 'firebase/firestore';
 import { Typography, Alert, Box, Grid, Button } from '@mui/material';
 
-function Dashboard() {
+const Dashboard = () => {
   const [user, loading] = useAuthState(auth);
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  const setUserName = () => {
-    setName(user?.displayName);
-    if (!user?.displayName) {
-      fetchUserName();
-    }
-  };
-
-  const fetchUserName = async () => {
-    setError('');
-
-    try {
-      const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-      setName(data.name);
-    } catch (err) {
-      console.log(err);
-      setError('An error occured while fetching user data');
-    }
-  };
 
   const handleLogout = async () => {
     setError('');
@@ -47,7 +26,25 @@ function Dashboard() {
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate('/');
-    setUserName();
+
+    const fetchUserName = async () => {
+      setError('');
+
+      try {
+        const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
+        const doc = await getDocs(q);
+        const data = doc.docs[0].data();
+        setName(data.name);
+      } catch (err) {
+        console.log(err);
+        setError('An error occured while fetching user data');
+      }
+    };
+
+    setName(user?.displayName);
+    if (!user?.displayName) {
+      fetchUserName();
+    }
   }, [user, loading, navigate]);
 
   return (
@@ -87,6 +84,6 @@ function Dashboard() {
       </Box>
     </Box>
   );
-}
+};
 
 export default Dashboard;

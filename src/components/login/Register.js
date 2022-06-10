@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, registerWithEmailAndPassword } from '../firebase';
+import { auth, registerWithEmailAndPassword } from '../../firebase';
 import {
   Typography,
   Alert,
@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
-function Register() {
+const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -60,6 +60,7 @@ function Register() {
           {error}
         </Alert>
       )}
+
       <Box component="form" noValidate sx={{ mt: 1 }}>
         <TextField
           margin="normal"
@@ -123,6 +124,7 @@ function Register() {
         >
           Sign Up
         </Button>
+
         <Grid container>
           <Grid item>
             Already have an account?&nbsp;
@@ -132,6 +134,6 @@ function Register() {
       </Box>
     </Box>
   );
-}
+};
 
 export default Register;

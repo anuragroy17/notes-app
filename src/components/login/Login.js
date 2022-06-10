@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, logInWithEmailAndPassword, signInWithGoogle } from '../firebase';
+import {
+  auth,
+  logInWithEmailAndPassword,
+  signInWithGoogle,
+} from '../../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {
   Typography,
@@ -14,7 +18,7 @@ import {
 import { Google } from '@mui/icons-material';
 import LoginIcon from '@mui/icons-material/Login';
 
-function Login() {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -70,6 +74,7 @@ function Login() {
           {error}
         </Alert>
       )}
+
       <Box component="form" noValidate sx={{ mt: 1 }}>
         <TextField
           margin="normal"
@@ -119,6 +124,7 @@ function Login() {
         >
           Login with Google
         </Button>
+
         <Grid container>
           <Grid item xs>
             <Link to="/reset" variant="body2">
@@ -132,6 +138,6 @@ function Login() {
       </Box>
     </Box>
   );
-}
+};
 
 export default Login;

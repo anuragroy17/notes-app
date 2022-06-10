@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { auth, sendPasswordReset } from '../firebase';
+import { auth, sendPasswordReset } from '../../firebase';
 import {
   Typography,
   Alert,
@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import LockResetIcon from '@mui/icons-material/LockReset';
 
-function Reset() {
+const Reset = () => {
   const [email, setEmail] = useState('');
   const [user, loading] = useAuthState(auth);
   const [error, setError] = useState('');
@@ -26,7 +26,9 @@ function Reset() {
       setMessage('');
       setError('');
       await sendPasswordReset(email);
-      setMessage('Check your inbox for further instructions');
+      setMessage(
+        'Check your inbox for further instructions. If not found, check Spam folder'
+      );
     } catch (err) {
       console.log(err);
       setError('Failed to reset password');
@@ -64,6 +66,7 @@ function Reset() {
           {message}
         </Alert>
       )}
+
       <Box component="form" noValidate sx={{ mt: 1 }}>
         <TextField
           margin="normal"
@@ -89,6 +92,7 @@ function Reset() {
         >
           Reset Password
         </Button>
+
         <Grid container>
           <Grid item>
             Need an account? <Link to="/register">Register</Link> now.
@@ -97,6 +101,6 @@ function Reset() {
       </Box>
     </Box>
   );
-}
+};
 
 export default Reset;
