@@ -3,7 +3,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DescriptionSharpIcon from '@mui/icons-material/DescriptionSharp';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Menu, MenuItem } from '@mui/material';
+import { Avatar, Menu, MenuItem, Tooltip } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
@@ -50,10 +50,9 @@ const Header = () => {
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate('/');
-
+    console.log(user.photoURL);
     const fetchUserName = async () => {
       setError('');
-
       try {
         const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
         const doc = await getDocs(q);
@@ -115,16 +114,19 @@ const Header = () => {
         </Typography>
         {auth && (
           <div>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            <Tooltip title="Open User Menu">
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                {/* <AccountCircle /> */}
+                <Avatar alt={name} src={user?.photoURL} />
+              </IconButton>
+            </Tooltip>
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
