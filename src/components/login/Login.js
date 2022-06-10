@@ -50,7 +50,7 @@ const Login = () => {
       // maybe trigger a loading screen
       return;
     }
-    if (user) navigate('/dashboard');
+    if (user) navigate('/notes');
   }, [user, loading, navigate]);
 
   return (
