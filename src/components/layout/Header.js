@@ -1,6 +1,7 @@
 import { AccountCircle, Logout } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import DescriptionSharpIcon from '@mui/icons-material/DescriptionSharp';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Menu, MenuItem } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -20,8 +21,10 @@ const Header = () => {
   const [user, loading] = useAuthState(auth);
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+
   const navigate = useNavigate();
   const theme = useTheme();
+
   const ctx = useContext(MenuOpenContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -80,7 +83,7 @@ const Header = () => {
           onClick={ctx.handleDrawerOpen}
           edge="start"
           sx={{
-            marginRight: 5,
+            marginRight: 2,
             ...(ctx.open && { display: 'none' }),
           }}
         >
@@ -92,7 +95,7 @@ const Header = () => {
           onClick={ctx.handleDrawerClose}
           edge="start"
           sx={{
-            marginRight: 5,
+            marginRight: 2,
             ...(!ctx.open && { display: 'none' }),
           }}
         >
@@ -102,6 +105,11 @@ const Header = () => {
             <ChevronLeftIcon />
           )}
         </IconButton>
+        <DescriptionSharpIcon
+          sx={{
+            marginRight: 1,
+          }}
+        />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Notes
         </Typography>

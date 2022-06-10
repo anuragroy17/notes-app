@@ -1,7 +1,9 @@
-import MailIcon from '@mui/icons-material/Mail';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import {
-  CssBaseline,
+  NoteAddRounded,
+  ArchiveRounded,
+  DeleteForeverRounded,
+} from '@mui/icons-material/';
+import {
   Divider,
   List,
   ListItem,
@@ -9,65 +11,82 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import Box from '@mui/material/Box';
 import React, { useContext } from 'react';
 import MenuOpenContext from '../../context/menu-open-context';
 import { Drawer, DrawerHeader } from '../../shared/ui-themes';
 
 const SideDrawer = () => {
   const ctx = useContext(MenuOpenContext);
+
   return (
     <Drawer variant="permanent" open={ctx.open}>
       <DrawerHeader />
       <Divider />
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
+        <ListItem key="notes" disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              justifyContent: ctx.open ? 'initial' : 'center',
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
               sx={{
-                minHeight: 48,
-                justifyContent: ctx.open ? 'initial' : 'center',
-                px: 2.5,
+                minWidth: 0,
+                mr: ctx.open ? 3 : 'auto',
+                justifyContent: 'center',
               }}
             >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: ctx.open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} sx={{ opacity: ctx.open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
+              <NoteAddRounded />
+            </ListItemIcon>
+            <ListItemText primary="Notes" sx={{ opacity: ctx.open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key="archived" disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              justifyContent: ctx.open ? 'initial' : 'center',
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
               sx={{
-                minHeight: 48,
-                justifyContent: ctx.open ? 'initial' : 'center',
-                px: 2.5,
+                minWidth: 0,
+                mr: ctx.open ? 3 : 'auto',
+                justifyContent: 'center',
               }}
             >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: ctx.open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} sx={{ opacity: ctx.open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+              <ArchiveRounded />
+            </ListItemIcon>
+            <ListItemText
+              primary="Archive"
+              sx={{ opacity: ctx.open ? 1 : 0 }}
+            />
+          </ListItemButton>
+        </ListItem>
+        <Divider />
+        <ListItem key="trashed" disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              justifyContent: ctx.open ? 'initial' : 'center',
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: ctx.open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}
+            >
+              <DeleteForeverRounded />
+            </ListItemIcon>
+            <ListItemText primary="Trash" sx={{ opacity: ctx.open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Drawer>
   );
