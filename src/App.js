@@ -8,19 +8,16 @@ import { theme } from './shared/ui-themes.js';
 
 const App = () => {
   return (
-    <Container component="main">
-      <CssBaseline />
-      <ThemeProvider theme={theme}>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Login />}></Route>
-            <Route exact path="/register" element={<Register />}></Route>
-            <Route exact path="/reset" element={<Reset />}></Route>
-            <Route exact path="/notes" element={<Layout />}></Route>
-          </Routes>
-        </Router>
-      </ThemeProvider>
-    </Container>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />}></Route>
+          <Route exact path="/register" element={<Register />}></Route>
+          <Route exact path="/reset" element={<Reset />}></Route>
+          <Route exact path="/notes" element={<Layout />}></Route>
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 };
 
