@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { Box, CssBaseline } from '@mui/material';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
-import './Dashboard.scss';
 import { auth, db, logout } from '../../firebase';
-import { query, collection, getDocs, where } from 'firebase/firestore';
-import {
-  Typography,
-  Alert,
-  Box,
-  Grid,
-  Button,
-  CssBaseline,
-} from '@mui/material';
 import { DrawerHeader } from '../../shared/ui-themes';
-import { Notes } from '@mui/icons-material';
+import './Dashboard.scss';
+import AddNote from './notes/AddNote';
 import Note from './notes/Note';
 
 const Dashboard = () => {
@@ -62,10 +55,12 @@ const Dashboard = () => {
       sx={{
         flexGrow: 1,
         p: 3,
+        overflowX: 'hidden',
       }}
     >
       <CssBaseline />
       <DrawerHeader />
+      <AddNote />
       <Box
         sx={{
           display: 'grid',
