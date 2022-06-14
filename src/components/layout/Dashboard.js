@@ -25,6 +25,10 @@ const Dashboard = (props) => {
     props.onAdd();
   };
 
+  const handleOnCLick = () => {
+    props.onClickLocation();
+  };
+
   return (
     <Box
       sx={{
@@ -57,6 +61,7 @@ const Dashboard = (props) => {
             createdDate={`${
               months[note.date.getMonth()]
             } ${note.date.getDate()}, ${note.date.getFullYear()}`}
+            onClick={handleOnCLick}
           />
         ))}
       </Box>

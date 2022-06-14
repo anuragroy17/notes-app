@@ -12,6 +12,7 @@ import {
   addDoc,
   collection,
   collectionGroup,
+  deleteDoc,
   doc,
   getDocs,
   getFirestore,
@@ -154,6 +155,15 @@ const getNotes = async (uid, queryClause) => {
   }
 };
 
+const deleteNote = async (uid, id) => {
+  try {
+    const noteRef = doc(userDataRef, uid, 'notes', id);
+    await deleteDoc(noteRef);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
 export {
   auth,
   db,
@@ -165,4 +175,5 @@ export {
   addNote,
   getNotes,
   setLocation,
+  deleteNote,
 };

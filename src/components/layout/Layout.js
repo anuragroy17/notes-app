@@ -36,18 +36,27 @@ const Layout = () => {
 
   const handleGetNotes = () => {
     setShowAddNote(true);
+    setFetchNotes(true);
+    setFetchArchived(false);
+    setFetchTrashed(false);
     setNotes([]);
     fetchDataFromFireStore('isNote');
   };
 
   const handleGetArchived = () => {
     setShowAddNote(false);
+    setFetchNotes(false);
+    setFetchArchived(true);
+    setFetchTrashed(false);
     setNotes([]);
     fetchDataFromFireStore('isArchived');
   };
 
   const handleGetTrashed = () => {
     setShowAddNote(false);
+    setFetchNotes(false);
+    setFetchArchived(false);
+    setFetchTrashed(true);
     setNotes([]);
     fetchDataFromFireStore('isTrashed');
   };
@@ -77,6 +86,12 @@ const Layout = () => {
     [user?.uid]
   );
 
+  const handleOnClickLocation = () => {
+    if (fetchNotes) fetchDataFromFireStore('isNote');
+    if (fetchTrashed) fetchDataFromFireStore('isTrashed');
+    if (fetchArchived) fetchDataFromFireStore('isArchived');
+  };
+
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate('/');
@@ -101,6 +116,7 @@ const Layout = () => {
         />
         <Dashboard
           onAdd={handleAdd}
+          onClickLocation={handleOnClickLocation}
           notes={notes}
           showAddNote={showAddNote}
           uid={user?.uid}

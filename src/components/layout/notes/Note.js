@@ -12,7 +12,7 @@ import { useState } from 'react';
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
-import { setLocation } from '../../../firebase';
+import { setLocation, deleteNote } from '../../../firebase';
 
 const Note = (props) => {
   const [show, setShow] = useState(false);
@@ -25,6 +25,12 @@ const Note = (props) => {
       [locationField]: flag,
     };
     await setLocation(locationObj, props.uid, props.id);
+    props.onClick();
+  };
+
+  const deleteNoteFromFS = async () => {
+    await deleteNote(props.uid, props.id);
+    props.onClick();
   };
 
   return (
@@ -102,6 +108,7 @@ const Note = (props) => {
           <IconButton
             aria-label="delete"
             sx={{ visibility: show ? 'visible' : 'hidden' }}
+            onClick={deleteNoteFromFS}
           >
             <DeleteForeverIcon />
           </IconButton>
