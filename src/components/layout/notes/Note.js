@@ -19,7 +19,7 @@ const Note = () => {
       variant="outlined"
       onMouseOver={() => setShow(true)}
       onMouseOut={() => setShow(false)}
-      sx={{ maxWidth: 200, borderRadius: '20px', marginBottom: '10px' }}
+      sx={{ width: 200, borderRadius: '20px', marginBottom: '10px' }}
     >
       <CardHeader
         title="Shrimp and Chorizo Paella"
