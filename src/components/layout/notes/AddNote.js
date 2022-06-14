@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { addNote, auth, db } from '../../../firebase';
 
-const AddNote = () => {
+const AddNote = (props) => {
   const [edit, setEdit] = useState(false);
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
@@ -52,11 +52,17 @@ const AddNote = () => {
     setTitle('');
     setNote('');
     setError('');
+    setEdit(false);
   };
 
   const addEditNote = async (e) => {
     e.preventDefault();
+    if (note.trim().length === 0 || title.trim().length === 0) {
+      setError('Please fill data');
+      return;
+    }
     addNoteToDB();
+    props.onAdd();
   };
 
   return (

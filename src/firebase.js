@@ -1,23 +1,25 @@
 import { initializeApp } from 'firebase/app';
 import {
-  GoogleAuthProvider,
-  getAuth,
-  signInWithPopup,
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
   sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from 'firebase/auth';
 import {
+  addDoc,
+  collection,
+  collectionGroup,
+  doc,
+  getDocs,
   getFirestore,
   query,
-  getDocs,
-  collection,
-  where,
-  addDoc,
   setDoc,
-  doc,
-  collectionGroup,
+  Timestamp,
+  updateDoc,
+  where,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -78,22 +80,6 @@ const registerWithEmailAndPassword = async (name, email, password) => {
   }
 };
 
-const addNote = async (title, note, uid) => {
-  try {
-    const saveNote = {
-      title: title,
-      note: note,
-      uid: uid,
-      isArchived: false,
-      isTrashed: false,
-    };
-    const notesRef = collection(userDataRef, uid, 'notes');
-    await setDoc(doc(notesRef), saveNote);
-  } catch (err) {
-    throw new Error(err.message);
-  }
-};
-
 const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
@@ -110,13 +96,73 @@ const logout = async () => {
   }
 };
 
+const addNote = async (title, note, uid) => {
+  try {
+    const saveNote = {
+      title: title,
+      note: note,
+      uid: uid,
+      date: Timestamp.fromDate(new Date()),
+      isNote: true,
+      isArchived: false,
+      isTrashed: false,
+      lastEdited: Timestamp.fromDate(new Date()),
+    };
+    const notesRef = collection(userDataRef, uid, 'notes');
+    await setDoc(doc(notesRef), saveNote);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const editNote = async (title, note, uid, id, date) => {
+  try {
+    const editNote = {
+      title: title,
+      note: note,
+      uid: uid,
+      date: Timestamp.fromDate(new Date()),
+      isNote: true,
+      isArchived: false,
+      isTrashed: false,
+      lastEdited: Timestamp.fromDate(new Date()),
+    };
+    const notesRef = collection(userDataRef, uid, 'notes', id);
+    await setDoc(doc(notesRef), editNote);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const setLocation = async (locationObj, uid, id) => {
+  try {
+    const noteRef = doc(userDataRef, uid, 'notes', id);
+    await updateDoc(noteRef, locationObj);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const getNotes = async (uid, queryClause) => {
+  try {
+    const notesRef = collection(userDataRef, uid, 'notes');
+    const q = query(notesRef, where(queryClause, '==', true));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot;
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
 export {
   auth,
   db,
-  addNote,
   signInWithGoogle,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
   logout,
+  addNote,
+  getNotes,
+  setLocation,
 };

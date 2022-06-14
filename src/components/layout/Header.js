@@ -12,7 +12,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
-import MenuOpenContext from '../../context/menu-open-context';
+import MenuContext from '../../context/menu-context';
 import { auth, db, logout } from '../../firebase';
 import { AppBar } from '../../shared/ui-themes';
 import { IgnoreDisabledListItem } from '../../shared/utils';
@@ -25,7 +25,7 @@ const Header = () => {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const ctx = useContext(MenuOpenContext);
+  const ctx = useContext(MenuContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenu = (event) => {
@@ -50,7 +50,7 @@ const Header = () => {
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate('/');
-    console.log(user.photoURL);
+
     const fetchUserName = async () => {
       setError('');
       try {
@@ -64,9 +64,10 @@ const Header = () => {
       }
     };
 
-    setName(user?.displayName);
     if (!user?.displayName) {
       fetchUserName();
+    } else {
+      setName(user?.displayName);
     }
   }, [user, loading, navigate]);
 

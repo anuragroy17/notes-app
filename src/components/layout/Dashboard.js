@@ -1,54 +1,29 @@
 import { Box, CssBaseline } from '@mui/material';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
-import { auth, db, logout } from '../../firebase';
+import { useState } from 'react';
 import { DrawerHeader } from '../../shared/ui-themes';
 import './Dashboard.scss';
 import AddNote from './notes/AddNote';
 import Note from './notes/Note';
 
-const Dashboard = () => {
-  const [user, loading] = useAuthState(auth);
-  const [name, setName] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
-  const handleLogout = async () => {
-    setError('');
-
-    try {
-      await logout();
-    } catch (err) {
-      console.log(err);
-      setError('Failed to log out');
-    }
+const Dashboard = (props) => {
+  const handleAdd = () => {
+    props.onAdd();
   };
-
-  useEffect(() => {
-    if (loading) return;
-    if (!user) return navigate('/');
-
-    const fetchUserName = async () => {
-      setError('');
-
-      try {
-        const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
-        const doc = await getDocs(q);
-        const data = doc.docs[0].data();
-        setName(data.name);
-      } catch (err) {
-        console.log(err);
-        setError('An error occured while fetching user data');
-      }
-    };
-
-    setName(user?.displayName);
-    if (!user?.displayName) {
-      fetchUserName();
-    }
-  }, [user, loading, navigate]);
 
   return (
     <Box
@@ -60,7 +35,7 @@ const Dashboard = () => {
     >
       <CssBaseline />
       <DrawerHeader />
-      <AddNote />
+      {props.showAddNote && <AddNote onAdd={handleAdd} />}
       <Box
         sx={{
           display: 'grid',
@@ -69,23 +44,21 @@ const Dashboard = () => {
           gridColumnGap: '10px',
         }}
       >
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
+        {props.notes.map((note) => (
+          <Note
+            key={note.id}
+            id={note.id}
+            uid={props.uid}
+            title={note.title}
+            note={note.note}
+            isNote={note.isNote}
+            isArchived={note.isArchived}
+            isTrashed={note.isTrashed}
+            createdDate={`${
+              months[note.date.getMonth()]
+            } ${note.date.getDate()}, ${note.date.getFullYear()}`}
+          />
+        ))}
       </Box>
     </Box>
   );

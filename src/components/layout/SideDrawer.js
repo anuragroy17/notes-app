@@ -12,11 +12,24 @@ import {
   ListItemText,
 } from '@mui/material';
 import React, { useContext } from 'react';
-import MenuOpenContext from '../../context/menu-open-context';
+import MenuContext from '../../context/menu-context';
 import { Drawer, DrawerHeader } from '../../shared/ui-themes';
+import { pageArray } from '../../shared/utils';
 
-const SideDrawer = () => {
-  const ctx = useContext(MenuOpenContext);
+const SideDrawer = (props) => {
+  const ctx = useContext(MenuContext);
+
+  const getNotes = () => {
+    props.getNotes();
+  };
+
+  const getArchived = () => {
+    props.getArchived();
+  };
+
+  const getTrashed = () => {
+    props.getTrashed();
+  };
 
   return (
     <Drawer variant="permanent" open={ctx.open}>
@@ -25,6 +38,7 @@ const SideDrawer = () => {
       <List>
         <ListItem key="notes" disablePadding sx={{ display: 'block' }}>
           <ListItemButton
+            onClick={getNotes}
             sx={{
               minHeight: 48,
               justifyContent: ctx.open ? 'initial' : 'center',
@@ -40,11 +54,15 @@ const SideDrawer = () => {
             >
               <NoteAddRounded />
             </ListItemIcon>
-            <ListItemText primary="Notes" sx={{ opacity: ctx.open ? 1 : 0 }} />
+            <ListItemText
+              primary={pageArray[0]}
+              sx={{ opacity: ctx.open ? 1 : 0 }}
+            />
           </ListItemButton>
         </ListItem>
         <ListItem key="archived" disablePadding sx={{ display: 'block' }}>
           <ListItemButton
+            onClick={getArchived}
             sx={{
               minHeight: 48,
               justifyContent: ctx.open ? 'initial' : 'center',
@@ -61,7 +79,7 @@ const SideDrawer = () => {
               <ArchiveRounded />
             </ListItemIcon>
             <ListItemText
-              primary="Archive"
+              primary={pageArray[1]}
               sx={{ opacity: ctx.open ? 1 : 0 }}
             />
           </ListItemButton>
@@ -69,6 +87,7 @@ const SideDrawer = () => {
         <Divider />
         <ListItem key="trashed" disablePadding sx={{ display: 'block' }}>
           <ListItemButton
+            onClick={getTrashed}
             sx={{
               minHeight: 48,
               justifyContent: ctx.open ? 'initial' : 'center',
@@ -84,7 +103,10 @@ const SideDrawer = () => {
             >
               <DeleteForeverRounded />
             </ListItemIcon>
-            <ListItemText primary="Trash" sx={{ opacity: ctx.open ? 1 : 0 }} />
+            <ListItemText
+              primary={pageArray[2]}
+              sx={{ opacity: ctx.open ? 1 : 0 }}
+            />
           </ListItemButton>
         </ListItem>
       </List>
