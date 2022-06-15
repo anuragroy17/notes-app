@@ -1,71 +1,110 @@
-import React, { useEffect, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
-import './Dashboard.scss';
-import { auth, db, logout } from '../../firebase';
-import { query, collection, getDocs, where } from 'firebase/firestore';
-import {
-  Typography,
-  Alert,
-  Box,
-  Grid,
-  Button,
-  CssBaseline,
-} from '@mui/material';
+import { Box, CssBaseline, Fab, Tooltip } from '@mui/material';
+import { useState } from 'react';
 import { DrawerHeader } from '../../shared/ui-themes';
-import { Notes } from '@mui/icons-material';
+import './Dashboard.scss';
+import AddNote from './notes/AddNote';
 import Note from './notes/Note';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { auth, deleteMultiple } from '../../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
-const Dashboard = () => {
-  const [user, loading] = useAuthState(auth);
-  const [name, setName] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
-  const handleLogout = async () => {
-    setError('');
+const Dashboard = (props) => {
+  const [edit, setEdit] = useState(false);
+  const [isUpdate, setUpdate] = useState(false);
+  const [title, setTitle] = useState('');
+  const [note, setNote] = useState('');
+  const [id, setId] = useState('');
+  const [uid, setUid] = useState('');
 
-    try {
-      await logout();
-    } catch (err) {
-      console.log(err);
-      setError('Failed to log out');
+  const handleEdit = () => {
+    if (edit) {
+      return;
     }
+    setEdit(true);
   };
 
-  useEffect(() => {
-    if (loading) return;
-    if (!user) return navigate('/');
+  const closeEdit = () => {
+    setEdit(false);
+    setUpdate(false);
+    setTitle('');
+    setNote('');
+    setId('');
+    setUid('');
+  };
 
-    const fetchUserName = async () => {
-      setError('');
+  const handleAdd = () => {
+    props.onAdd();
+  };
 
-      try {
-        const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
-        const doc = await getDocs(q);
-        const data = doc.docs[0].data();
-        setName(data.name);
-      } catch (err) {
-        console.log(err);
-        setError('An error occured while fetching user data');
-      }
-    };
+  const handleOnCLick = () => {
+    props.onClickLocation();
+  };
 
-    setName(user?.displayName);
-    if (!user?.displayName) {
-      fetchUserName();
-    }
-  }, [user, loading, navigate]);
+  const editNote = (title, note, id, uid) => {
+    setEdit(true);
+    setUpdate(true);
+    setTitle(title);
+    setNote(note);
+    setId(id);
+    setUid(uid);
+  };
+
+  const deleteAll = async () => {
+    const ids = props.notes.map((n) => n.id);
+    await deleteMultiple(ids, props.uid);
+    props.getTrashed();
+  };
 
   return (
     <Box
       sx={{
         flexGrow: 1,
         p: 3,
+        overflowX: 'hidden',
       }}
     >
       <CssBaseline />
       <DrawerHeader />
+      {props.showAddNote && (
+        <AddNote
+          edit={edit}
+          isUpdate={isUpdate}
+          title={title}
+          note={note}
+          id={id}
+          uid={uid}
+          onAdd={handleAdd}
+          handleEdit={handleEdit}
+          closeEdit={closeEdit}
+        />
+      )}
+
+      {props.showDeleteAll && props.notes.length !== 0 && (
+        <Tooltip title="Delete All">
+          <Fab
+            aria-label="delete-all"
+            onClick={deleteAll}
+            sx={{ position: 'fixed', right: 15, bottom: 15 }}
+          >
+            <RemoveCircleOutlineIcon />
+          </Fab>
+        </Tooltip>
+      )}
       <Box
         sx={{
           display: 'grid',
@@ -74,23 +113,23 @@ const Dashboard = () => {
           gridColumnGap: '10px',
         }}
       >
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-        <Note />
+        {props.notes.map((note) => (
+          <Note
+            key={note.id}
+            id={note.id}
+            uid={props.uid}
+            title={note.title}
+            note={note.note}
+            isNote={note.isNote}
+            isArchived={note.isArchived}
+            isTrashed={note.isTrashed}
+            createdDate={`${
+              months[note.date.getMonth()]
+            } ${note.date.getDate()}, ${note.date.getFullYear()}`}
+            onClick={handleOnCLick}
+            editNote={editNote}
+          />
+        ))}
       </Box>
     </Box>
   );

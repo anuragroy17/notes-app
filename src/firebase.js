@@ -1,20 +1,27 @@
 import { initializeApp } from 'firebase/app';
 import {
-  GoogleAuthProvider,
-  getAuth,
-  signInWithPopup,
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
   sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from 'firebase/auth';
 import {
+  addDoc,
+  collection,
+  collectionGroup,
+  deleteDoc,
+  doc,
+  getDocs,
   getFirestore,
   query,
-  getDocs,
-  collection,
+  setDoc,
+  Timestamp,
+  updateDoc,
   where,
-  addDoc,
+  writeBatch,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -30,15 +37,17 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
+const userCollectionRef = collection(db, 'users');
+const userDataRef = collection(db, 'userData');
 
 const signInWithGoogle = async () => {
   try {
     const res = await signInWithPopup(auth, googleProvider);
     const user = res.user;
-    const q = query(collection(db, 'users'), where('uid', '==', user.uid));
+    const q = query(userCollectionRef, where('uid', '==', user.uid));
     const docs = await getDocs(q);
     if (docs.docs.length === 0) {
-      await addDoc(collection(db, 'users'), {
+      await addDoc(userCollectionRef, {
         uid: user.uid,
         name: user.displayName,
         authProvider: 'google',
@@ -89,6 +98,84 @@ const logout = async () => {
   }
 };
 
+const addNote = async (title, note, uid) => {
+  try {
+    const saveNote = {
+      title: title,
+      note: note,
+      uid: uid,
+      date: Timestamp.fromDate(new Date()),
+      isNote: true,
+      isArchived: false,
+      isTrashed: false,
+      lastEdited: Timestamp.fromDate(new Date()),
+    };
+    const notesRef = collection(userDataRef, uid, 'notes');
+    await setDoc(doc(notesRef), saveNote);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const editNote = async (title, note, uid, id) => {
+  try {
+    const noteRef = doc(userDataRef, uid, 'notes', id);
+    const editNote = {
+      title: title,
+      note: note,
+      lastEdited: Timestamp.fromDate(new Date()),
+    };
+    await updateDoc(noteRef, editNote);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const setLocation = async (locationObj, uid, id) => {
+  try {
+    const noteRef = doc(userDataRef, uid, 'notes', id);
+    await updateDoc(noteRef, locationObj);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const getNotes = async (uid, queryClause) => {
+  try {
+    const notesRef = collection(userDataRef, uid, 'notes');
+    const q = query(notesRef, where(queryClause, '==', true));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot;
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const deleteNote = async (uid, id) => {
+  try {
+    const noteRef = doc(userDataRef, uid, 'notes', id);
+    await deleteDoc(noteRef);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const deleteMultiple = async (noteIds, uid) => {
+  try {
+    if (!uid) {
+      console.log('uid is missing');
+      return;
+    }
+    const batch = writeBatch(db);
+    noteIds.forEach((id) => {
+      batch.delete(doc(userDataRef, uid, 'notes', id));
+    });
+    await batch.commit();
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
 export {
   auth,
   db,
@@ -97,4 +184,10 @@ export {
   registerWithEmailAndPassword,
   sendPasswordReset,
   logout,
+  addNote,
+  editNote,
+  getNotes,
+  setLocation,
+  deleteNote,
+  deleteMultiple,
 };

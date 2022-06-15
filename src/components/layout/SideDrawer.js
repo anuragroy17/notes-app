@@ -11,12 +11,29 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import React, { useContext } from 'react';
-import MenuOpenContext from '../../context/menu-open-context';
+import React, { useContext, useState } from 'react';
+import MenuContext from '../../context/menu-context';
 import { Drawer, DrawerHeader } from '../../shared/ui-themes';
+import { pageArray } from '../../shared/utils';
 
-const SideDrawer = () => {
-  const ctx = useContext(MenuOpenContext);
+const SideDrawer = (props) => {
+  const ctx = useContext(MenuContext);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const getNotes = (event, index) => {
+    setSelectedIndex(index);
+    props.getNotes();
+  };
+
+  const getArchived = (event, index) => {
+    setSelectedIndex(index);
+    props.getArchived();
+  };
+
+  const getTrashed = (event, index) => {
+    setSelectedIndex(index);
+    props.getTrashed();
+  };
 
   return (
     <Drawer variant="permanent" open={ctx.open}>
@@ -25,6 +42,8 @@ const SideDrawer = () => {
       <List>
         <ListItem key="notes" disablePadding sx={{ display: 'block' }}>
           <ListItemButton
+            selected={selectedIndex === 0}
+            onClick={(event) => getNotes(event, 0)}
             sx={{
               minHeight: 48,
               justifyContent: ctx.open ? 'initial' : 'center',
@@ -40,11 +59,16 @@ const SideDrawer = () => {
             >
               <NoteAddRounded />
             </ListItemIcon>
-            <ListItemText primary="Notes" sx={{ opacity: ctx.open ? 1 : 0 }} />
+            <ListItemText
+              primary={pageArray[0]}
+              sx={{ opacity: ctx.open ? 1 : 0 }}
+            />
           </ListItemButton>
         </ListItem>
         <ListItem key="archived" disablePadding sx={{ display: 'block' }}>
           <ListItemButton
+            selected={selectedIndex === 1}
+            onClick={(event) => getArchived(event, 1)}
             sx={{
               minHeight: 48,
               justifyContent: ctx.open ? 'initial' : 'center',
@@ -61,7 +85,7 @@ const SideDrawer = () => {
               <ArchiveRounded />
             </ListItemIcon>
             <ListItemText
-              primary="Archive"
+              primary={pageArray[1]}
               sx={{ opacity: ctx.open ? 1 : 0 }}
             />
           </ListItemButton>
@@ -69,6 +93,8 @@ const SideDrawer = () => {
         <Divider />
         <ListItem key="trashed" disablePadding sx={{ display: 'block' }}>
           <ListItemButton
+            selected={selectedIndex === 2}
+            onClick={(event) => getTrashed(event, 2)}
             sx={{
               minHeight: 48,
               justifyContent: ctx.open ? 'initial' : 'center',
@@ -84,7 +110,10 @@ const SideDrawer = () => {
             >
               <DeleteForeverRounded />
             </ListItemIcon>
-            <ListItemText primary="Trash" sx={{ opacity: ctx.open ? 1 : 0 }} />
+            <ListItemText
+              primary={pageArray[2]}
+              sx={{ opacity: ctx.open ? 1 : 0 }}
+            />
           </ListItemButton>
         </ListItem>
       </List>
