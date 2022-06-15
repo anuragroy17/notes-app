@@ -8,6 +8,9 @@ export const theme = createTheme({
   typography: {
     fontFamily: ['Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'].join(','),
   },
+  palette: {
+    type: 'dark'
+  },
 });
 
 const openedMixin = (theme) => ({
