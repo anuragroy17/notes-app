@@ -2,22 +2,22 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/login/Login.js';
 import Register from './components/login/Register';
 import Reset from './components/login/Reset';
-import Dashboard from './components/layout/Dashboard';
-import { Container, CssBaseline } from '@mui/material';
+import Layout from './components/layout/Layout';
+import { Container, CssBaseline, ThemeProvider } from '@mui/material';
+import { theme } from './shared/ui-themes.js';
 
 const App = () => {
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
+    <ThemeProvider theme={theme}>
       <Router>
         <Routes>
           <Route path="/" element={<Login />}></Route>
           <Route exact path="/register" element={<Register />}></Route>
           <Route exact path="/reset" element={<Reset />}></Route>
-          <Route exact path="/dashboard" element={<Dashboard />}></Route>
+          <Route exact path="/notes" element={<Layout />}></Route>
         </Routes>
       </Router>
-    </Container>
+    </ThemeProvider>
   );
 };
 

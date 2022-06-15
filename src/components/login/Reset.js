@@ -13,6 +13,7 @@ import {
   Avatar,
 } from '@mui/material';
 import LockResetIcon from '@mui/icons-material/LockReset';
+import LoginContainer from '../UI/LoginContainer';
 
 const Reset = () => {
   const [email, setEmail] = useState('');
@@ -41,15 +42,7 @@ const Reset = () => {
   }, [user, loading, navigate]);
 
   return (
-    <Box
-      sx={{
-        marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <LoginContainer>
       <Avatar sx={{ m: 1, bgcolor: '#FBBC04' }}>
         <LockResetIcon />
       </Avatar>
@@ -99,7 +92,7 @@ const Reset = () => {
           </Grid>
         </Grid>
       </Box>
-    </Box>
+    </LoginContainer>
   );
 };
 

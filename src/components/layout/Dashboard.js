@@ -4,7 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import './Dashboard.scss';
 import { auth, db, logout } from '../../firebase';
 import { query, collection, getDocs, where } from 'firebase/firestore';
-import { Typography, Alert, Box, Grid, Button } from '@mui/material';
+import {
+  Typography,
+  Alert,
+  Box,
+  Grid,
+  Button,
+  CssBaseline,
+} from '@mui/material';
+import { DrawerHeader } from '../../shared/ui-themes';
+import { Notes } from '@mui/icons-material';
+import Note from './notes/Note';
 
 const Dashboard = () => {
   const [user, loading] = useAuthState(auth);
@@ -50,37 +60,37 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
-        marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flexGrow: 1,
+        p: 3,
       }}
     >
-      <Typography component="h1" variant="h5">
-        Profile
-      </Typography>
-      {error && (
-        <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="error">
-          {error}
-        </Alert>
-      )}
-      <Grid container>
-        <Grid item>
-          <strong>Name:</strong> {name}
-        </Grid>
-      </Grid>
-      <Box component="form" noValidate sx={{ mt: 1 }}>
-        <Button
-          fullWidth
-          variant="contained"
-          disabled={loading}
-          onClick={handleLogout}
-          sx={{ mt: 2, mb: 2 }}
-          disableElevation
-        >
-          Log Out
-        </Button>
+      <CssBaseline />
+      <DrawerHeader />
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill,minmax(auto,220px))',
+          justifyContent: 'space-evenly',
+          gridColumnGap: '10px',
+        }}
+      >
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
+        <Note />
       </Box>
     </Box>
   );
