@@ -5,10 +5,12 @@ import Reset from './components/login/Reset';
 import Layout from './components/layout/Layout';
 import { Container, CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from './shared/ui-themes.js';
+import { Paper } from '@mui/material';
 
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
+     <Paper>
       <Router>
         <Routes>
           <Route path="/" element={<Login />}></Route>
@@ -17,6 +19,7 @@ const App = () => {
           <Route exact path="/notes" element={<Layout />}></Route>
         </Routes>
       </Router>
+     </Paper>
     </ThemeProvider>
   );
 };
