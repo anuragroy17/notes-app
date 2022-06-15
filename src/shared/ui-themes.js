@@ -1,10 +1,19 @@
-import { styled, createTheme } from '@mui/material/styles';
+import { styled, createTheme, createMuiTheme } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 
 export const drawerWidth = 240;
 
 export const theme = createTheme({
+  typography: {
+    fontFamily: ['Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'].join(','),
+  },
+  palette: {
+    type: 'dark'
+  },
+});
+
+export const darkTheme = createMuiTheme({
   typography: {
     fontFamily: ['Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'].join(','),
   },
