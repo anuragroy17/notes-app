@@ -11,23 +11,27 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import MenuContext from '../../context/menu-context';
 import { Drawer, DrawerHeader } from '../../shared/ui-themes';
 import { pageArray } from '../../shared/utils';
 
 const SideDrawer = (props) => {
   const ctx = useContext(MenuContext);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const getNotes = () => {
+  const getNotes = (event, index) => {
+    setSelectedIndex(index);
     props.getNotes();
   };
 
-  const getArchived = () => {
+  const getArchived = (event, index) => {
+    setSelectedIndex(index);
     props.getArchived();
   };
 
-  const getTrashed = () => {
+  const getTrashed = (event, index) => {
+    setSelectedIndex(index);
     props.getTrashed();
   };
 
@@ -38,7 +42,8 @@ const SideDrawer = (props) => {
       <List>
         <ListItem key="notes" disablePadding sx={{ display: 'block' }}>
           <ListItemButton
-            onClick={getNotes}
+            selected={selectedIndex === 0}
+            onClick={(event) => getNotes(event, 0)}
             sx={{
               minHeight: 48,
               justifyContent: ctx.open ? 'initial' : 'center',
@@ -62,7 +67,8 @@ const SideDrawer = (props) => {
         </ListItem>
         <ListItem key="archived" disablePadding sx={{ display: 'block' }}>
           <ListItemButton
-            onClick={getArchived}
+            selected={selectedIndex === 1}
+            onClick={(event) => getArchived(event, 1)}
             sx={{
               minHeight: 48,
               justifyContent: ctx.open ? 'initial' : 'center',
@@ -87,7 +93,8 @@ const SideDrawer = (props) => {
         <Divider />
         <ListItem key="trashed" disablePadding sx={{ display: 'block' }}>
           <ListItemButton
-            onClick={getTrashed}
+            selected={selectedIndex === 2}
+            onClick={(event) => getTrashed(event, 2)}
             sx={{
               minHeight: 48,
               justifyContent: ctx.open ? 'initial' : 'center',

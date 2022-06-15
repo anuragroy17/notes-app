@@ -21,6 +21,7 @@ import {
   Timestamp,
   updateDoc,
   where,
+  writeBatch,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -116,20 +117,15 @@ const addNote = async (title, note, uid) => {
   }
 };
 
-const editNote = async (title, note, uid, id, date) => {
+const editNote = async (title, note, uid, id) => {
   try {
+    const noteRef = doc(userDataRef, uid, 'notes', id);
     const editNote = {
       title: title,
       note: note,
-      uid: uid,
-      date: Timestamp.fromDate(new Date()),
-      isNote: true,
-      isArchived: false,
-      isTrashed: false,
       lastEdited: Timestamp.fromDate(new Date()),
     };
-    const notesRef = collection(userDataRef, uid, 'notes', id);
-    await setDoc(doc(notesRef), editNote);
+    await updateDoc(noteRef, editNote);
   } catch (err) {
     throw new Error(err.message);
   }
@@ -164,6 +160,22 @@ const deleteNote = async (uid, id) => {
   }
 };
 
+const deleteMultiple = async (noteIds, uid) => {
+  try {
+    if (!uid) {
+      console.log('uid is missing');
+      return;
+    }
+    const batch = writeBatch(db);
+    noteIds.forEach((id) => {
+      batch.delete(doc(userDataRef, uid, 'notes', id));
+    });
+    await batch.commit();
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
 export {
   auth,
   db,
@@ -173,7 +185,9 @@ export {
   sendPasswordReset,
   logout,
   addNote,
+  editNote,
   getNotes,
   setLocation,
   deleteNote,
+  deleteMultiple,
 };

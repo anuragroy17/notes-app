@@ -33,6 +33,10 @@ const Note = (props) => {
     props.onClick();
   };
 
+  const editNote = () => {
+    props.editNote(props.title, props.note, props.id, props.uid);
+  };
+
   return (
     <Card
       variant="outlined"
@@ -69,58 +73,71 @@ const Note = (props) => {
         }}
       >
         {props.isNote && (
-          <IconButton
-            aria-label="edit"
-            sx={{ visibility: show ? 'visible' : 'hidden' }}
-          >
-            <Edit />
-          </IconButton>
+          <Tooltip title="Edit">
+            <IconButton
+              aria-label="edit"
+              sx={{ visibility: show ? 'visible' : 'hidden' }}
+              onClick={editNote}
+            >
+              <Edit />
+            </IconButton>
+          </Tooltip>
         )}
 
         {(props.isNote || props.isArchived) && (
-          <IconButton
-            aria-label="archive"
-            sx={{ visibility: show ? 'visible' : 'hidden' }}
-            onClick={() => setLocationinFS('isArchived', true)}
-          >
-            <Archive />
-          </IconButton>
+          <Tooltip title="Archive">
+            <IconButton
+              aria-label="archive"
+              sx={{ visibility: show ? 'visible' : 'hidden' }}
+              onClick={() => setLocationinFS('isArchived', true)}
+            >
+              <Archive />
+            </IconButton>
+          </Tooltip>
         )}
         {props.isArchived && (
-          <IconButton
-            aria-label="archive"
-            sx={{ visibility: show ? 'visible' : 'hidden' }}
-            onClick={() => setLocationinFS('isNote', true)}
-          >
-            <UnarchiveIcon />
-          </IconButton>
+          <Tooltip title="Unarchive">
+            <IconButton
+              aria-label="archive"
+              sx={{ visibility: show ? 'visible' : 'hidden' }}
+              onClick={() => setLocationinFS('isNote', true)}
+            >
+              <UnarchiveIcon />
+            </IconButton>
+          </Tooltip>
         )}
         {props.isTrashed && (
-          <IconButton
-            aria-label="delete"
-            sx={{ visibility: show ? 'visible' : 'hidden' }}
-            onClick={() => setLocationinFS('isNote', true)}
-          >
-            <RestoreFromTrashIcon />
-          </IconButton>
+          <Tooltip title="Restore">
+            <IconButton
+              aria-label="delete"
+              sx={{ visibility: show ? 'visible' : 'hidden' }}
+              onClick={() => setLocationinFS('isNote', true)}
+            >
+              <RestoreFromTrashIcon />
+            </IconButton>
+          </Tooltip>
         )}
         {props.isTrashed && (
-          <IconButton
-            aria-label="delete"
-            sx={{ visibility: show ? 'visible' : 'hidden' }}
-            onClick={deleteNoteFromFS}
-          >
-            <DeleteForeverIcon />
-          </IconButton>
+          <Tooltip title="Delete Forever">
+            <IconButton
+              aria-label="delete"
+              sx={{ visibility: show ? 'visible' : 'hidden' }}
+              onClick={deleteNoteFromFS}
+            >
+              <DeleteForeverIcon />
+            </IconButton>
+          </Tooltip>
         )}
         {(props.isNote || props.isArchived) && (
-          <IconButton
-            aria-label="delete"
-            sx={{ visibility: show ? 'visible' : 'hidden' }}
-            onClick={() => setLocationinFS('isTrashed', true)}
-          >
-            <Delete />
-          </IconButton>
+          <Tooltip title="Delete">
+            <IconButton
+              aria-label="delete"
+              sx={{ visibility: show ? 'visible' : 'hidden' }}
+              onClick={() => setLocationinFS('isTrashed', true)}
+            >
+              <Delete />
+            </IconButton>
+          </Tooltip>
         )}
       </CardActions>
     </Card>

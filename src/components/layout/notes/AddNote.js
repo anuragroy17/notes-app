@@ -8,23 +8,19 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { addNote, auth, db } from '../../../firebase';
+import { addNote, auth, editNote } from '../../../firebase';
 
 const AddNote = (props) => {
-  const [edit, setEdit] = useState(false);
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
+  const [isUpdate, setUpdate] = useState(false);
   const [user, loading] = useAuthState(auth);
   const [error, setError] = useState('');
-  // const ref = useRef(null);
 
   const handleEdit = () => {
-    if (edit) {
-      return;
-    }
-    setEdit(true);
+    props.handleEdit();
   };
 
   const handleNoteInput = (event) => {
@@ -36,10 +32,11 @@ const AddNote = (props) => {
   };
 
   const closeEdit = () => {
-    setEdit(false);
     setTitle('');
     setNote('');
     setError('');
+    setUpdate(false);
+    props.closeEdit();
   };
 
   const addNoteToDB = async () => {
@@ -47,12 +44,28 @@ const AddNote = (props) => {
       await addNote(title, note, user?.uid);
     } catch (err) {
       console.log(err);
-      setError('An error occured while fetching user data');
+      setError('An error occured while adding note');
     }
     setTitle('');
     setNote('');
     setError('');
-    setEdit(false);
+    props.closeEdit();
+    props.onAdd();
+  };
+
+  const updateNoteToDB = async () => {
+    try {
+      await editNote(title, note, props.uid, props.id);
+    } catch (err) {
+      console.log(err);
+      setError('An error occured while updating note');
+    }
+    setTitle('');
+    setNote('');
+    setError('');
+    setUpdate(false);
+    props.closeEdit();
+    props.onAdd();
   };
 
   const addEditNote = async (e) => {
@@ -61,9 +74,20 @@ const AddNote = (props) => {
       setError('Please fill data');
       return;
     }
+    if (isUpdate) {
+      updateNoteToDB();
+      return;
+    }
     addNoteToDB();
-    props.onAdd();
   };
+
+  useEffect(() => {
+    if (props.isUpdate) {
+      setTitle(props.title);
+      setNote(props.note);
+      setUpdate(true);
+    }
+  }, [props.isUpdate, props.note, props.title]);
 
   return (
     <Card
@@ -77,14 +101,16 @@ const AddNote = (props) => {
       }}
       onClick={handleEdit}
     >
-      <Typography sx={{ padding: '20px', ...(edit && { display: 'none' }) }}>
+      <Typography
+        sx={{ padding: '20px', ...(props.edit && { display: 'none' }) }}
+      >
         Add a Note ...
       </Typography>
       <Box
         sx={{
           padding: '20px',
           transition: 'display 2s',
-          ...(!edit && { display: 'none' }),
+          ...(!props.edit && { display: 'none' }),
         }}
       >
         <form onSubmit={addEditNote}>
@@ -92,6 +118,7 @@ const AddNote = (props) => {
             id="standard-basic"
             label="Title.."
             variant="standard"
+            defaultValue={props.title}
             value={title}
             onChange={handleTitleInput}
             fullWidth
@@ -102,6 +129,7 @@ const AddNote = (props) => {
             multiline
             maxRows={4}
             fullWidth
+            defaultValue={props.note}
             value={note}
             onChange={handleNoteInput}
             variant="standard"

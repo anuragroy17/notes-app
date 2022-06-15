@@ -13,6 +13,7 @@ const Layout = () => {
 
   const [notes, setNotes] = useState([]);
   const [dataAdded, setDataAdded] = useState(false);
+  const [showDeleteAll, setShowDeleteAll] = useState(false);
   const [showAddNote, setShowAddNote] = useState(true);
 
   const [fetchNotes, setFetchNotes] = useState(false);
@@ -36,6 +37,7 @@ const Layout = () => {
 
   const handleGetNotes = () => {
     setShowAddNote(true);
+    setShowDeleteAll(false);
     setFetchNotes(true);
     setFetchArchived(false);
     setFetchTrashed(false);
@@ -45,6 +47,7 @@ const Layout = () => {
 
   const handleGetArchived = () => {
     setShowAddNote(false);
+    setShowDeleteAll(false);
     setFetchNotes(false);
     setFetchArchived(true);
     setFetchTrashed(false);
@@ -54,6 +57,7 @@ const Layout = () => {
 
   const handleGetTrashed = () => {
     setShowAddNote(false);
+    setShowDeleteAll(true);
     setFetchNotes(false);
     setFetchArchived(false);
     setFetchTrashed(true);
@@ -75,11 +79,11 @@ const Layout = () => {
           isNote: doc.isNote,
           isArchived: doc.isArchived,
           isTrashed: doc.isTrashed,
-          lastEdited: new Date(doc.lastEdited),
+          lastEdited: new Date(doc.lastEdited.toDate()),
         });
       });
 
-      receivedNotes.sort((a, b) => b.date - a.date);
+      receivedNotes.sort((a, b) => b.lastEdited - a.lastEdited);
       setNotes(receivedNotes);
       setDataAdded(false);
     },
@@ -119,7 +123,9 @@ const Layout = () => {
           onClickLocation={handleOnClickLocation}
           notes={notes}
           showAddNote={showAddNote}
+          showDeleteAll={showDeleteAll}
           uid={user?.uid}
+          getTrashed={handleGetTrashed}
         />
       </MenuContext.Provider>
     </Box>
