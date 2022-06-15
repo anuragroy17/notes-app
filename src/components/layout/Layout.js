@@ -36,6 +36,7 @@ const Layout = () => {
   };
 
   const handleGetNotes = () => {
+    setOpen(false);
     setShowAddNote(true);
     setShowDeleteAll(false);
     setFetchNotes(true);
@@ -46,6 +47,7 @@ const Layout = () => {
   };
 
   const handleGetArchived = () => {
+    setOpen(false);
     setShowAddNote(false);
     setShowDeleteAll(false);
     setFetchNotes(false);
@@ -56,6 +58,7 @@ const Layout = () => {
   };
 
   const handleGetTrashed = () => {
+    setOpen(false);
     setShowAddNote(false);
     setShowDeleteAll(true);
     setFetchNotes(false);
