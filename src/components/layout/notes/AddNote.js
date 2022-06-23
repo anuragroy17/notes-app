@@ -134,7 +134,7 @@ const AddNote = (props) => {
             sx={{
               marginTop: '10px',
             }}
-            inputRef={input && input.focus()}
+            inputRef={(input) => input && input.focus()}
           />
           <CardActions
             disableSpacing
