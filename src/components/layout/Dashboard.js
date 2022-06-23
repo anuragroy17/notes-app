@@ -1,5 +1,14 @@
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { Box, CssBaseline, Fab, Tooltip } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  CssBaseline,
+  Fab,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { useState } from 'react';
 import { deleteMultiple } from '../../firebase';
 import { DrawerHeader } from '../../shared/ui-themes';
@@ -104,6 +113,40 @@ const Dashboard = (props) => {
         </Tooltip>
       )}
 
+      {props.notes.length === 0 && (
+        <Card
+          variant="outlined"
+          sx={{
+            maxWidth: 400,
+            minWidth: 200,
+            margin: '0 auto',
+            borderRadius: '20px',
+          }}
+        >
+          <CardMedia
+            component="img"
+            height="200"
+            sx={{
+              display: 'block',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              width: '50%',
+              objectFit: 'contain',
+            }}
+            image="images/no_data.svg"
+            alt="no data"
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+              No Notes Found!
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Please add notes from Notes section
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
+
       <Box
         sx={{
           display: 'grid',
@@ -112,23 +155,24 @@ const Dashboard = (props) => {
           gridColumnGap: '10px',
         }}
       >
-        {props.notes.map((note) => (
-          <Note
-            key={note.id}
-            id={note.id}
-            uid={props.uid}
-            title={note.title}
-            note={note.note}
-            isNote={note.isNote}
-            isArchived={note.isArchived}
-            isTrashed={note.isTrashed}
-            createdDate={`${
-              months[note.date.getMonth()]
-            } ${note.date.getDate()}, ${note.date.getFullYear()}`}
-            onClick={handleOnCLick}
-            editNote={editNote}
-          />
-        ))}
+        {props.notes.length !== 0 &&
+          props.notes.map((note) => (
+            <Note
+              key={note.id}
+              id={note.id}
+              uid={props.uid}
+              title={note.title}
+              note={note.note}
+              isNote={note.isNote}
+              isArchived={note.isArchived}
+              isTrashed={note.isTrashed}
+              createdDate={`${
+                months[note.date.getMonth()]
+              } ${note.date.getDate()}, ${note.date.getFullYear()}`}
+              onClick={handleOnCLick}
+              editNote={editNote}
+            />
+          ))}
       </Box>
     </Box>
   );
