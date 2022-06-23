@@ -13,7 +13,7 @@ const LoginContainer = (props) => {
     >
       <Box
         sx={{
-          paddingTop: 10,
+          marginTop: 10,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
