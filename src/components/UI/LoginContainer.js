@@ -9,11 +9,15 @@ const LoginContainer = (props) => {
       maxWidth="xs"
       sx={{
         minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <Box
         sx={{
-          marginTop: 10,
+          marginBottom: 10,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
