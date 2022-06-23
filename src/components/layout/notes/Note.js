@@ -42,7 +42,7 @@ const Note = (props) => {
       variant="outlined"
       onMouseOver={() => setShow(true)}
       onMouseOut={() => setShow(false)}
-      sx={{ width: 200, borderRadius: '20px', marginBottom: '10px' }}
+      sx={{ width: 200, borderRadius: '20px', marginBottom: '10px', userSelect:'none' }}
     >
       <CardHeader
         title={
