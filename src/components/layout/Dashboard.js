@@ -3,7 +3,6 @@ import { Box, CssBaseline, Fab, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { deleteMultiple } from '../../firebase';
 import { DrawerHeader } from '../../shared/ui-themes';
-import './Dashboard.scss';
 import AddNote from './notes/AddNote';
 import Note from './notes/Note';
 

@@ -9,30 +9,44 @@ import { useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
-import MenuContext from '../../context/menu-context';
+import { useDataLayerValue } from '../../context-api/Datalayer';
+import { actionTypes } from '../../context-api/reducer';
 import { auth, db, logout } from '../../firebase';
-import { AppBar } from '../../shared/ui-themes';
+import { AppBar, DarkModeSwitch } from '../../shared/ui-themes';
 import { IgnoreDisabledListItem } from '../../shared/utils';
 
 const Header = () => {
   const [user, loading] = useAuthState(auth);
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const [{ isDark, isOpen }, dispatch] = useDataLayerValue();
 
   const navigate = useNavigate();
   const theme = useTheme();
-
-  const ctx = useContext(MenuContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleMenu = (event) => {
+  const handleDrawer = () => {
+    dispatch({
+      type: actionTypes.SET_DRAWER,
+      isOpen: !isOpen,
+    });
+  };
+
+  const setTheme = () => {
+    dispatch({
+      type: actionTypes.SET_THEME,
+      isDark: !isDark,
+    });
+  };
+
+  const handleUserMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleUserMenuClose = () => {
     setAnchorEl(null);
   };
 
@@ -80,11 +94,11 @@ const Header = () => {
         <IconButton
           color="inherit"
           aria-label="open drawer"
-          onClick={ctx.handleDrawerOpen}
+          onClick={handleDrawer}
           edge="start"
           sx={{
             marginRight: 2,
-            ...(ctx.open && { display: 'none' }),
+            ...(isOpen && { display: 'none' }),
           }}
         >
           <MenuIcon />
@@ -92,11 +106,11 @@ const Header = () => {
         <IconButton
           color="inherit"
           aria-label="open drawer"
-          onClick={ctx.handleDrawerClose}
+          onClick={handleDrawer}
           edge="start"
           sx={{
             marginRight: 2,
-            ...(!ctx.open && { display: 'none' }),
+            ...(!isOpen && { display: 'none' }),
           }}
         >
           {theme.direction === 'rtl' ? (
@@ -111,17 +125,25 @@ const Header = () => {
           }}
         />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Notes
+          Scribbly
         </Typography>
         {auth && (
           <div>
+            <Tooltip title="Set Dark Mode">
+              <DarkModeSwitch
+                checked={isDark}
+                onChange={setTheme}
+                size="small"
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            </Tooltip>
             <Tooltip title="Open User Menu">
               <IconButton
                 size="large"
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
-                onClick={handleMenu}
+                onClick={handleUserMenu}
                 color="inherit"
               >
                 {!user?.photoURL && <AccountCircle />}
@@ -142,9 +164,9 @@ const Header = () => {
                 horizontal: 'right',
               }}
               open={Boolean(anchorEl)}
-              onClose={handleClose}
+              onClose={handleUserMenuClose}
             >
-              <IgnoreDisabledListItem onClick={handleClose} disabled>
+              <IgnoreDisabledListItem onClick={handleUserMenuClose} disabled>
                 <AccountCircle sx={{ color: '#a3a3a3' }} />
                 <Typography ml={0.5} noWrap sx={{ color: '#a3a3a3' }}>
                   {name}

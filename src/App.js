@@ -4,10 +4,11 @@ import Layout from './components/layout/Layout';
 import Login from './components/login/Login.js';
 import Register from './components/login/Register';
 import Reset from './components/login/Reset';
+import { useDataLayerValue } from './context-api/Datalayer';
 import { darkTheme, lightTheme } from './shared/ui-themes.js';
 
 const App = () => {
-  const isDark = false;
+  const [{ isDark }] = useDataLayerValue();
 
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
