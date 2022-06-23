@@ -1,12 +1,11 @@
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Box, CssBaseline, Fab, Tooltip } from '@mui/material';
 import { useState } from 'react';
+import { deleteMultiple } from '../../firebase';
 import { DrawerHeader } from '../../shared/ui-themes';
 import './Dashboard.scss';
 import AddNote from './notes/AddNote';
 import Note from './notes/Note';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { auth, deleteMultiple } from '../../firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 const months = [
   'January',
@@ -105,6 +104,7 @@ const Dashboard = (props) => {
           </Fab>
         </Tooltip>
       )}
+
       <Box
         sx={{
           display: 'grid',

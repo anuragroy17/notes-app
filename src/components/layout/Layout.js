@@ -1,8 +1,8 @@
 import { Box, CssBaseline } from '@mui/material';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
-import MenuContext, { pageArray } from '../../context/menu-context';
+import MenuContext from '../../context/menu-context';
 import { auth, getNotes } from '../../firebase';
 import Dashboard from './Dashboard';
 import Header from './Header';
@@ -36,7 +36,7 @@ const Layout = () => {
   };
 
   const handleGetNotes = () => {
-    setOpen(false);
+    setOpen(false);
     setShowAddNote(true);
     setShowDeleteAll(false);
     setFetchNotes(true);
@@ -47,7 +47,7 @@ const Layout = () => {
   };
 
   const handleGetArchived = () => {
-    setOpen(false);
+    setOpen(false);
     setShowAddNote(false);
     setShowDeleteAll(false);
     setFetchNotes(false);
@@ -58,7 +58,7 @@ const Layout = () => {
   };
 
   const handleGetTrashed = () => {
-    setOpen(false);
+    setOpen(false);
     setShowAddNote(false);
     setShowDeleteAll(true);
     setFetchNotes(false);
