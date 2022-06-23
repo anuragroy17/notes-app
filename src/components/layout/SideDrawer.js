@@ -1,7 +1,7 @@
 import {
-  NoteAddRounded,
   ArchiveRounded,
   DeleteForeverRounded,
+  NoteAddRounded,
 } from '@mui/icons-material/';
 import {
   Divider,
@@ -10,15 +10,16 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Tooltip,
 } from '@mui/material';
-import React, { useContext, useState } from 'react';
-import MenuContext from '../../context/menu-context';
+import { useState } from 'react';
+import { useDataLayerValue } from '../../context-api/Datalayer';
 import { Drawer, DrawerHeader } from '../../shared/ui-themes';
 import { pageArray } from '../../shared/utils';
 
 const SideDrawer = (props) => {
-  const ctx = useContext(MenuContext);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [{ isOpen }] = useDataLayerValue();
 
   const getNotes = (event, index) => {
     setSelectedIndex(index);
@@ -36,85 +37,91 @@ const SideDrawer = (props) => {
   };
 
   return (
-    <Drawer variant="permanent" open={ctx.open}>
+    <Drawer variant="permanent" open={isOpen}>
       <DrawerHeader />
       <Divider />
       <List>
         <ListItem key="notes" disablePadding sx={{ display: 'block' }}>
-          <ListItemButton
-            selected={selectedIndex === 0}
-            onClick={(event) => getNotes(event, 0)}
-            sx={{
-              minHeight: 48,
-              justifyContent: ctx.open ? 'initial' : 'center',
-              px: 2.5,
-            }}
-          >
-            <ListItemIcon
+          <Tooltip title={isOpen ? '' : pageArray[0]} placement="right">
+            <ListItemButton
+              selected={selectedIndex === 0}
+              onClick={(event) => getNotes(event, 0)}
               sx={{
-                minWidth: 0,
-                mr: ctx.open ? 3 : 'auto',
-                justifyContent: 'center',
+                minHeight: 48,
+                justifyContent: isOpen ? 'initial' : 'center',
+                px: 2.5,
               }}
             >
-              <NoteAddRounded />
-            </ListItemIcon>
-            <ListItemText
-              primary={pageArray[0]}
-              sx={{ opacity: ctx.open ? 1 : 0 }}
-            />
-          </ListItemButton>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: isOpen ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <NoteAddRounded />
+              </ListItemIcon>
+              <ListItemText
+                primary={pageArray[0]}
+                sx={{ opacity: isOpen ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </Tooltip>
         </ListItem>
         <ListItem key="archived" disablePadding sx={{ display: 'block' }}>
-          <ListItemButton
-            selected={selectedIndex === 1}
-            onClick={(event) => getArchived(event, 1)}
-            sx={{
-              minHeight: 48,
-              justifyContent: ctx.open ? 'initial' : 'center',
-              px: 2.5,
-            }}
-          >
-            <ListItemIcon
+          <Tooltip title={isOpen ? '' : pageArray[1]} placement="right">
+            <ListItemButton
+              selected={selectedIndex === 1}
+              onClick={(event) => getArchived(event, 1)}
               sx={{
-                minWidth: 0,
-                mr: ctx.open ? 3 : 'auto',
-                justifyContent: 'center',
+                minHeight: 48,
+                justifyContent: isOpen ? 'initial' : 'center',
+                px: 2.5,
               }}
             >
-              <ArchiveRounded />
-            </ListItemIcon>
-            <ListItemText
-              primary={pageArray[1]}
-              sx={{ opacity: ctx.open ? 1 : 0 }}
-            />
-          </ListItemButton>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: isOpen ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <ArchiveRounded />
+              </ListItemIcon>
+              <ListItemText
+                primary={pageArray[1]}
+                sx={{ opacity: isOpen ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </Tooltip>
         </ListItem>
         <Divider />
         <ListItem key="trashed" disablePadding sx={{ display: 'block' }}>
-          <ListItemButton
-            selected={selectedIndex === 2}
-            onClick={(event) => getTrashed(event, 2)}
-            sx={{
-              minHeight: 48,
-              justifyContent: ctx.open ? 'initial' : 'center',
-              px: 2.5,
-            }}
-          >
-            <ListItemIcon
+          <Tooltip title={isOpen ? '' : pageArray[2]} placement="right">
+            <ListItemButton
+              selected={selectedIndex === 2}
+              onClick={(event) => getTrashed(event, 2)}
               sx={{
-                minWidth: 0,
-                mr: ctx.open ? 3 : 'auto',
-                justifyContent: 'center',
+                minHeight: 48,
+                justifyContent: isOpen ? 'initial' : 'center',
+                px: 2.5,
               }}
             >
-              <DeleteForeverRounded />
-            </ListItemIcon>
-            <ListItemText
-              primary={pageArray[2]}
-              sx={{ opacity: ctx.open ? 1 : 0 }}
-            />
-          </ListItemButton>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: isOpen ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <DeleteForeverRounded />
+              </ListItemIcon>
+              <ListItemText
+                primary={pageArray[2]}
+                sx={{ opacity: isOpen ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </Tooltip>
         </ListItem>
       </List>
     </Drawer>

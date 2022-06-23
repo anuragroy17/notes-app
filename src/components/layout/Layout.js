@@ -2,15 +2,14 @@ import { Box, CssBaseline } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
-import MenuContext from '../../context/menu-context';
+import { useDataLayerValue } from '../../context-api/Datalayer';
+import { actionTypes } from '../../context-api/reducer';
 import { auth, getNotes } from '../../firebase';
 import Dashboard from './Dashboard';
 import Header from './Header';
 import SideDrawer from './SideDrawer';
 
 const Layout = () => {
-  const [open, setOpen] = useState(false);
-
   const [notes, setNotes] = useState([]);
   const [dataAdded, setDataAdded] = useState(false);
   const [showDeleteAll, setShowDeleteAll] = useState(false);
@@ -19,24 +18,24 @@ const Layout = () => {
   const [fetchNotes, setFetchNotes] = useState(false);
   const [fetchArchived, setFetchArchived] = useState(false);
   const [fetchTrashed, setFetchTrashed] = useState(false);
+  const [{ isOpen }, dispatch] = useDataLayerValue();
 
   const [user, loading] = useAuthState(auth);
   const navigate = useNavigate();
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   const handleAdd = () => {
     fetchDataFromFireStore('isNote');
   };
 
+  const handleDrawer = () => {
+    dispatch({
+      type: actionTypes.SET_DRAWER,
+      isOpen: false,
+    });
+  };
+
   const handleGetNotes = () => {
-    setOpen(false);
+    handleDrawer();
     setShowAddNote(true);
     setShowDeleteAll(false);
     setFetchNotes(true);
@@ -47,7 +46,7 @@ const Layout = () => {
   };
 
   const handleGetArchived = () => {
-    setOpen(false);
+    handleDrawer();
     setShowAddNote(false);
     setShowDeleteAll(false);
     setFetchNotes(false);
@@ -58,7 +57,7 @@ const Layout = () => {
   };
 
   const handleGetTrashed = () => {
-    setOpen(false);
+    handleDrawer();
     setShowAddNote(false);
     setShowDeleteAll(true);
     setFetchNotes(false);
@@ -108,29 +107,21 @@ const Layout = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <MenuContext.Provider
-        value={{
-          open: open,
-          handleDrawerOpen: handleDrawerOpen,
-          handleDrawerClose: handleDrawerClose,
-        }}
-      >
-        <Header />
-        <SideDrawer
-          getNotes={handleGetNotes}
-          getArchived={handleGetArchived}
-          getTrashed={handleGetTrashed}
-        />
-        <Dashboard
-          onAdd={handleAdd}
-          onClickLocation={handleOnClickLocation}
-          notes={notes}
-          showAddNote={showAddNote}
-          showDeleteAll={showDeleteAll}
-          uid={user?.uid}
-          getTrashed={handleGetTrashed}
-        />
-      </MenuContext.Provider>
+      <Header />
+      <SideDrawer
+        getNotes={handleGetNotes}
+        getArchived={handleGetArchived}
+        getTrashed={handleGetTrashed}
+      />
+      <Dashboard
+        onAdd={handleAdd}
+        onClickLocation={handleOnClickLocation}
+        notes={notes}
+        showAddNote={showAddNote}
+        showDeleteAll={showDeleteAll}
+        uid={user?.uid}
+        getTrashed={handleGetTrashed}
+      />
     </Box>
   );
 };
