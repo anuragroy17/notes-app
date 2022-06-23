@@ -118,7 +118,6 @@ const AddNote = (props) => {
             id="standard-basic"
             label="Title.."
             variant="standard"
-            defaultValue={props.title}
             value={title}
             onChange={handleTitleInput}
             fullWidth
@@ -129,14 +128,13 @@ const AddNote = (props) => {
             multiline
             maxRows={4}
             fullWidth
-            defaultValue={props.note}
             value={note}
             onChange={handleNoteInput}
             variant="standard"
             sx={{
               marginTop: '10px',
             }}
-            autoFocus
+            inputRef={(input) => props.edit && input?.focus()}
           />
           <CardActions
             disableSpacing
@@ -158,7 +156,7 @@ const AddNote = (props) => {
               variant="outlined"
               color="primary"
               aria-label="share"
-              onClick={addEditNote}
+              type="submit"
             >
               <AddIcon />
             </IconButton>

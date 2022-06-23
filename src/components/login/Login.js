@@ -27,7 +27,8 @@ const Login = () => {
   const [user, loading] = useAuthState(auth);
   const navigate = useNavigate();
 
-  const login = async () => {
+  const login = async (e) => {
+    e.preventDefault();
     try {
       setError('');
       await logInWithEmailAndPassword(email, password);
@@ -69,7 +70,7 @@ const Login = () => {
         </Alert>
       )}
 
-      <Box component="form" noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={login} noValidate sx={{ mt: 1 }}>
         <TextField
           margin="normal"
           required
@@ -98,10 +99,10 @@ const Login = () => {
           autoComplete="current-password"
         />
         <Button
+          type="submit"
           fullWidth
           variant="contained"
           disabled={loading}
-          onClick={login}
           sx={{ mt: 2, mb: 2 }}
           disableElevation
         >

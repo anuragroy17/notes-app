@@ -60,7 +60,7 @@ const Reset = () => {
         </Alert>
       )}
 
-      <Box component="form" noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={reset} noValidate sx={{ mt: 1 }}>
         <TextField
           margin="normal"
           required
@@ -79,7 +79,7 @@ const Reset = () => {
           fullWidth
           variant="contained"
           disabled={loading}
-          onClick={reset}
+          type="submit"
           sx={{ mt: 2, mb: 2 }}
           disableElevation
         >

@@ -23,7 +23,8 @@ const Register = () => {
   const [user, loading] = useAuthState(auth);
   const navigate = useNavigate();
 
-  const register = async () => {
+  const register = async (e) => {
+    e.preventDefault();
     if (!name) return setError('Please enter name');
     if (password !== passwordConfirm) return setError('Passwords do not match');
     try {
@@ -54,7 +55,7 @@ const Register = () => {
         </Alert>
       )}
 
-      <Box component="form" noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={register} noValidate sx={{ mt: 1 }}>
         <TextField
           margin="normal"
           required
@@ -111,7 +112,7 @@ const Register = () => {
           fullWidth
           variant="contained"
           disabled={loading}
-          onClick={register}
+          type="submit"
           sx={{ mt: 2, mb: 2 }}
           disableElevation
         >
