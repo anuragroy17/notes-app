@@ -15,9 +15,11 @@ import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import { setLocation, deleteNote } from '../../../firebase';
 import { useDataLayerValue } from '../../../context-api/Datalayer';
 import { actionTypes } from '../../../context-api/reducer';
+import AlertDialog from '../../UI/AlertDialog';
 
 const Note = (props) => {
   const [show, setShow] = useState(false);
+  const [prompt, setPrompt] = useState(false);
   const [{ isLoading }, dispatch] = useDataLayerValue();
 
   const setLoader = (isLoading) => {
@@ -51,110 +53,131 @@ const Note = (props) => {
     props.editNote(props.title, props.note, props.id, props.uid);
   };
 
-  return (
-    <Card
-      variant="outlined"
-      onMouseOver={() => setShow(true)}
-      onMouseOut={() => setShow(false)}
-      sx={{ width: 200, borderRadius: '20px', marginBottom: '10px' }}
-    >
-      <CardHeader
-        title={
-          <Tooltip title={props.title}>
-            <Typography noWrap gutterBottom variant="h6" component="h4">
-              {props.title}
-            </Typography>
-          </Tooltip>
-        }
-        subheader={props.createdDate}
-        sx={{ display: 'block', overflow: 'hidden' }}
-      />
-      <CardContent sx={{ paddingBottom: '3px' }}>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ overflowWrap: 'break-word' }}
-        >
-          {props.note}
-        </Typography>
-      </CardContent>
-      <CardActions
-        disableSpacing
-        sx={{
-          display: 'flex',
-          justifyContent: 'right',
-          paddingTop: 0,
-        }}
-      >
-        {props.isNote && (
-          <Tooltip title="Edit">
-            <IconButton
-              aria-label="edit"
-              sx={{ visibility: show ? 'visible' : 'hidden' }}
-              onClick={editNote}
-            >
-              <Edit />
-            </IconButton>
-          </Tooltip>
-        )}
+  const openDialog = () => {
+    setPrompt(true);
+  };
 
-        {(props.isNote || props.isArchived) && (
-          <Tooltip title="Archive">
-            <IconButton
-              aria-label="archive"
-              sx={{ visibility: show ? 'visible' : 'hidden' }}
-              onClick={() => setLocationinFS('isArchived', true)}
-            >
-              <Archive />
-            </IconButton>
-          </Tooltip>
-        )}
-        {props.isArchived && (
-          <Tooltip title="Unarchive">
-            <IconButton
-              aria-label="archive"
-              sx={{ visibility: show ? 'visible' : 'hidden' }}
-              onClick={() => setLocationinFS('isNote', true)}
-            >
-              <UnarchiveIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-        {props.isTrashed && (
-          <Tooltip title="Restore">
-            <IconButton
-              aria-label="delete"
-              sx={{ visibility: show ? 'visible' : 'hidden' }}
-              onClick={() => setLocationinFS('isNote', true)}
-            >
-              <RestoreFromTrashIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-        {props.isTrashed && (
-          <Tooltip title="Delete Forever">
-            <IconButton
-              aria-label="delete"
-              sx={{ visibility: show ? 'visible' : 'hidden' }}
-              onClick={deleteNoteFromFS}
-            >
-              <DeleteForeverIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-        {(props.isNote || props.isArchived) && (
-          <Tooltip title="Delete">
-            <IconButton
-              aria-label="delete"
-              sx={{ visibility: show ? 'visible' : 'hidden' }}
-              onClick={() => setLocationinFS('isTrashed', true)}
-            >
-              <Delete />
-            </IconButton>
-          </Tooltip>
-        )}
-      </CardActions>
-    </Card>
+  const closeDialog = () => {
+    setPrompt(false);
+  };
+
+  const agreeDelete = () => {
+    deleteNoteFromFS();
+    setPrompt(false);
+  };
+
+  return (
+    <>
+      <AlertDialog
+        open={prompt}
+        agree={agreeDelete}
+        close={closeDialog}
+        isSingle={true}
+      />
+      <Card
+        variant="outlined"
+        onMouseOver={() => setShow(true)}
+        onMouseOut={() => setShow(false)}
+        sx={{ width: 200, borderRadius: '20px', marginBottom: '10px' }}
+      >
+        <CardHeader
+          title={
+            <Tooltip title={props.title}>
+              <Typography noWrap gutterBottom variant="h6" component="h4">
+                {props.title}
+              </Typography>
+            </Tooltip>
+          }
+          subheader={props.createdDate}
+          sx={{ display: 'block', overflow: 'hidden' }}
+        />
+        <CardContent sx={{ paddingBottom: '3px' }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ overflowWrap: 'break-word' }}
+          >
+            {props.note}
+          </Typography>
+        </CardContent>
+        <CardActions
+          disableSpacing
+          sx={{
+            display: 'flex',
+            justifyContent: 'right',
+            paddingTop: 0,
+          }}
+        >
+          {props.isNote && (
+            <Tooltip title="Edit">
+              <IconButton
+                aria-label="edit"
+                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                onClick={editNote}
+              >
+                <Edit />
+              </IconButton>
+            </Tooltip>
+          )}
+
+          {(props.isNote || props.isArchived) && (
+            <Tooltip title="Archive">
+              <IconButton
+                aria-label="archive"
+                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                onClick={() => setLocationinFS('isArchived', true)}
+              >
+                <Archive />
+              </IconButton>
+            </Tooltip>
+          )}
+          {props.isArchived && (
+            <Tooltip title="Unarchive">
+              <IconButton
+                aria-label="archive"
+                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                onClick={() => setLocationinFS('isNote', true)}
+              >
+                <UnarchiveIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {props.isTrashed && (
+            <Tooltip title="Restore">
+              <IconButton
+                aria-label="delete"
+                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                onClick={() => setLocationinFS('isNote', true)}
+              >
+                <RestoreFromTrashIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {props.isTrashed && (
+            <Tooltip title="Delete Forever">
+              <IconButton
+                aria-label="delete"
+                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                onClick={openDialog}
+              >
+                <DeleteForeverIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {(props.isNote || props.isArchived) && (
+            <Tooltip title="Delete">
+              <IconButton
+                aria-label="delete"
+                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                onClick={() => setLocationinFS('isTrashed', true)}
+              >
+                <Delete />
+              </IconButton>
+            </Tooltip>
+          )}
+        </CardActions>
+      </Card>
+    </>
   );
 };
 
