@@ -4,6 +4,7 @@ import Layout from './components/layout/Layout';
 import Login from './components/login/Login.js';
 import Register from './components/login/Register';
 import Reset from './components/login/Reset';
+import SimpleBackDrop from './components/UI/SimpleBackDrop';
 import { useDataLayerValue } from './context-api/Datalayer';
 import { darkTheme, lightTheme } from './shared/ui-themes.js';
 
@@ -13,6 +14,7 @@ const App = () => {
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <Paper sx={{ height: '100vh' }}>
+        <SimpleBackDrop />
         <Router>
           <Routes>
             <Route path="/" element={<Login />}></Route>

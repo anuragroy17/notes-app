@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, registerWithEmailAndPassword } from '../../firebase';
@@ -13,6 +13,8 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginContainer from '../UI/LoginContainer';
+import { useDataLayerValue } from '../../context-api/Datalayer';
+import { actionTypes } from '../../context-api/reducer';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -21,12 +23,15 @@ const Register = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [error, setError] = useState('');
   const [user, loading] = useAuthState(auth);
+  const [{ isLoading }, dispatch] = useDataLayerValue();
   const navigate = useNavigate();
 
   const register = async (e) => {
     e.preventDefault();
     if (!name) return setError('Please enter name');
     if (password !== passwordConfirm) return setError('Passwords do not match');
+
+    setLoader(true);
     try {
       setError('');
       await registerWithEmailAndPassword(name, email, password);
@@ -34,12 +39,27 @@ const Register = () => {
       setError('Failed to create an account');
       console.log(err);
     }
+    setLoader(false);
   };
 
+  const setLoader = useCallback(
+    (isLoading) => {
+      dispatch({
+        type: actionTypes.SET_LOADER,
+        isLoading: isLoading,
+      });
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
-    if (loading) return;
+    if (loading) {
+      setLoader(true);
+      return;
+    }
+    setLoader(false);
     if (user) navigate('/notes');
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, setLoader]);
 
   return (
     <LoginContainer>

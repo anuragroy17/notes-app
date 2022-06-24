@@ -10,14 +10,16 @@ import {
 import { Box } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useDataLayerValue } from '../../../context-api/Datalayer';
+import { actionTypes } from '../../../context-api/reducer';
 import { addNote, auth, editNote } from '../../../firebase';
 
 const AddNote = (props) => {
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
   const [isUpdate, setUpdate] = useState(false);
-  const [user, loading] = useAuthState(auth);
   const [error, setError] = useState('');
+  const [{ isLoading }, dispatch] = useDataLayerValue();
 
   const handleEdit = () => {
     props.handleEdit();
@@ -39,13 +41,22 @@ const AddNote = (props) => {
     props.closeEdit();
   };
 
+  const setLoader = (isLoading) => {
+    dispatch({
+      type: actionTypes.SET_LOADER,
+      isLoading: isLoading,
+    });
+  };
+
   const addNoteToDB = async () => {
+    setLoader(true);
     try {
-      await addNote(title, note, user?.uid);
+      await addNote(title, note, props.uid);
     } catch (err) {
       console.log(err);
       setError('An error occured while adding note');
     }
+    setLoader(false);
     setTitle('');
     setNote('');
     setError('');
@@ -54,12 +65,14 @@ const AddNote = (props) => {
   };
 
   const updateNoteToDB = async () => {
+    setLoader(true);
     try {
       await editNote(title, note, props.uid, props.id);
     } catch (err) {
       console.log(err);
       setError('An error occured while updating note');
     }
+    setLoader(false);
     setTitle('');
     setNote('');
     setError('');

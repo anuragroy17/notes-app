@@ -18,7 +18,7 @@ const Layout = () => {
   const [fetchNotes, setFetchNotes] = useState(false);
   const [fetchArchived, setFetchArchived] = useState(false);
   const [fetchTrashed, setFetchTrashed] = useState(false);
-  const [{ isOpen }, dispatch] = useDataLayerValue();
+  const [{ isOpen, isLoading }, dispatch] = useDataLayerValue();
 
   const [user, loading] = useAuthState(auth);
   const navigate = useNavigate();
@@ -67,8 +67,19 @@ const Layout = () => {
     fetchDataFromFireStore('isTrashed');
   };
 
+  const setLoader = useCallback(
+    (isLoading) => {
+      dispatch({
+        type: actionTypes.SET_LOADER,
+        isLoading: isLoading,
+      });
+    },
+    [dispatch]
+  );
+
   const fetchDataFromFireStore = useCallback(
     async (queryClause) => {
+      setLoader(true);
       const receivedNotesSnapShot = await getNotes(user?.uid, queryClause);
       const receivedNotes = [];
       receivedNotesSnapShot.forEach((d) => {
@@ -88,8 +99,9 @@ const Layout = () => {
       receivedNotes.sort((a, b) => b.lastEdited - a.lastEdited);
       setNotes(receivedNotes);
       setDataAdded(false);
+      setLoader(false);
     },
-    [user?.uid]
+    [setLoader, user?.uid]
   );
 
   const handleOnClickLocation = () => {
@@ -99,15 +111,19 @@ const Layout = () => {
   };
 
   useEffect(() => {
-    if (loading) return;
+    if (loading) {
+      setLoader(true);
+      return;
+    }
+    setLoader(false);
     if (!user) return navigate('/');
     fetchDataFromFireStore('isNote');
-  }, [fetchDataFromFireStore, loading, navigate, user]);
+  }, [fetchDataFromFireStore, loading, navigate, setLoader, user]);
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Header />
+      <Header user={user} />
       <SideDrawer
         getNotes={handleGetNotes}
         getArchived={handleGetArchived}

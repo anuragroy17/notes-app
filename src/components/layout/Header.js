@@ -9,7 +9,7 @@ import { useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 import { useDataLayerValue } from '../../context-api/Datalayer';
@@ -18,13 +18,11 @@ import { auth, db, logout } from '../../firebase';
 import { AppBar, DarkModeSwitch } from '../../shared/ui-themes';
 import { IgnoreDisabledListItem } from '../../shared/utils';
 
-const Header = () => {
-  const [user, loading] = useAuthState(auth);
+const Header = (props) => {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const [{ isDark, isOpen }, dispatch] = useDataLayerValue();
+  const [{ isDark, isOpen, isLoading }, dispatch] = useDataLayerValue();
 
-  const navigate = useNavigate();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -42,6 +40,16 @@ const Header = () => {
     });
   };
 
+  const setLoader = useCallback(
+    (isLoading) => {
+      dispatch({
+        type: actionTypes.SET_LOADER,
+        isLoading: isLoading,
+      });
+    },
+    [dispatch]
+  );
+
   const handleUserMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -52,23 +60,25 @@ const Header = () => {
 
   const handleLogout = async () => {
     setError('');
-
+    setLoader(true);
     try {
       await logout();
     } catch (err) {
       console.log(err);
       setError('Failed to log out');
     }
+    setLoader(false);
   };
 
   useEffect(() => {
-    if (loading) return;
-    if (!user) return navigate('/');
-
     const fetchUserName = async () => {
       setError('');
+      setLoader(true);
       try {
-        const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
+        const q = query(
+          collection(db, 'users'),
+          where('uid', '==', props.user?.uid)
+        );
         const doc = await getDocs(q);
         const data = doc.docs[0].data();
         setName(data.name);
@@ -76,14 +86,15 @@ const Header = () => {
         console.log(err);
         setError('An error occured while fetching user data');
       }
+      setLoader(false);
     };
 
-    if (!user?.displayName) {
+    if (!props.user?.displayName) {
       fetchUserName();
     } else {
-      setName(user?.displayName);
+      setName(props.user?.displayName);
     }
-  }, [user, loading, navigate]);
+  }, [props.user, setLoader]);
 
   return (
     <AppBar
@@ -146,9 +157,11 @@ const Header = () => {
                 onClick={handleUserMenu}
                 color="inherit"
               >
-                {!user?.photoURL && <AccountCircle />}
+                {!props.user?.photoURL && <AccountCircle />}
 
-                {user?.photoURL && <Avatar alt={name} src={user?.photoURL} />}
+                {props.user?.photoURL && (
+                  <Avatar alt={name} src={props.user?.photoURL} />
+                )}
               </IconButton>
             </Tooltip>
             <Menu
@@ -174,7 +187,7 @@ const Header = () => {
               </IgnoreDisabledListItem>
               <MenuItem
                 onClick={handleLogout}
-                disabled={loading}
+                disabled={isLoading}
                 horizontalalignment="Right"
               >
                 <Logout sx={{ color: '#a3a3a3' }} />

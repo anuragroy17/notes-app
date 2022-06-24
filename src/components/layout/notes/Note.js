@@ -13,9 +13,19 @@ import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import { setLocation, deleteNote } from '../../../firebase';
+import { useDataLayerValue } from '../../../context-api/Datalayer';
+import { actionTypes } from '../../../context-api/reducer';
 
 const Note = (props) => {
   const [show, setShow] = useState(false);
+  const [{ isLoading }, dispatch] = useDataLayerValue();
+
+  const setLoader = (isLoading) => {
+    dispatch({
+      type: actionTypes.SET_LOADER,
+      isLoading: isLoading,
+    });
+  };
 
   const setLocationinFS = async (locationField, flag) => {
     const locationObj = {
@@ -24,12 +34,16 @@ const Note = (props) => {
       isTrashed: false,
       [locationField]: flag,
     };
+    setLoader(true);
     await setLocation(locationObj, props.uid, props.id);
+    setLoader(false);
     props.onClick();
   };
 
   const deleteNoteFromFS = async () => {
+    setLoader(true);
     await deleteNote(props.uid, props.id);
+    setLoader(false);
     props.onClick();
   };
 

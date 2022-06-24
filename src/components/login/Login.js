@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   auth,
@@ -19,16 +19,20 @@ import {
 import { Google } from '@mui/icons-material';
 import LoginIcon from '@mui/icons-material/Login';
 import LoginContainer from '../UI/LoginContainer';
+import { useDataLayerValue } from '../../context-api/Datalayer';
+import { actionTypes } from '../../context-api/reducer';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [user, loading] = useAuthState(auth);
+  const [{ isLoading }, dispatch] = useDataLayerValue();
   const navigate = useNavigate();
 
   const login = async (e) => {
     e.preventDefault();
+    setLoader(true);
     try {
       setError('');
       await logInWithEmailAndPassword(email, password);
@@ -36,9 +40,11 @@ const Login = () => {
       console.log(err);
       setError('Failed to log in');
     }
+    setLoader(false);
   };
 
   const googleOAuth = async () => {
+    setLoader(true);
     try {
       setError('');
       await signInWithGoogle();
@@ -46,15 +52,28 @@ const Login = () => {
       console.log(err);
       setError('Error in google sign in!');
     }
+    setLoader(false);
   };
+
+  const setLoader = useCallback(
+    (isLoading) => {
+      dispatch({
+        type: actionTypes.SET_LOADER,
+        isLoading: isLoading,
+      });
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (loading) {
       // maybe trigger a loading screen
+      setLoader(true);
       return;
     }
+    setLoader(false);
     if (user) navigate('/notes');
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, setLoader]);
 
   return (
     <LoginContainer>

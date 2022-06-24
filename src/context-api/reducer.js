@@ -6,11 +6,13 @@ const getStoredTheme = () => {
 export const initialState = {
   isDark: getStoredTheme(),
   isOpen: false,
+  isLoading: false,
 };
 
 export const actionTypes = {
   SET_THEME: 'SET_THEME',
   SET_DRAWER: 'SET_DRAWER',
+  SET_LOADER: 'SET_LOADER',
 };
 
 const reducer = (state, action) => {
@@ -25,6 +27,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         isOpen: action.isOpen,
+      };
+    case actionTypes.SET_LOADER:
+      return {
+        ...state,
+        isLoading: action.isLoading,
       };
     default:
       return state;

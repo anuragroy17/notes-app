@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -14,15 +14,19 @@ import {
 } from '@mui/material';
 import LockResetIcon from '@mui/icons-material/LockReset';
 import LoginContainer from '../UI/LoginContainer';
+import { useDataLayerValue } from '../../context-api/Datalayer';
+import { actionTypes } from '../../context-api/reducer';
 
 const Reset = () => {
   const [email, setEmail] = useState('');
   const [user, loading] = useAuthState(auth);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [{ isLoading }, dispatch] = useDataLayerValue();
   const navigate = useNavigate();
 
   const reset = async () => {
+    setLoader(true);
     try {
       setMessage('');
       setError('');
@@ -34,12 +38,28 @@ const Reset = () => {
       console.log(err);
       setError('Failed to reset password');
     }
+    setLoader(false);
   };
 
+  const setLoader = useCallback(
+    (isLoading) => {
+      dispatch({
+        type: actionTypes.SET_LOADER,
+        isLoading: isLoading,
+      });
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
-    if (loading) return;
+    if (loading) {
+      setLoader(true);
+      return;
+    }
+
+    setLoader(false);
     if (user) navigate('/dashboard');
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, setLoader]);
 
   return (
     <LoginContainer>

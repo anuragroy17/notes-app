@@ -10,6 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import { useDataLayerValue } from '../../context-api/Datalayer';
+import { actionTypes } from '../../context-api/reducer';
 import { deleteMultiple } from '../../firebase';
 import { DrawerHeader } from '../../shared/ui-themes';
 import AddNote from './notes/AddNote';
@@ -36,7 +38,7 @@ const Dashboard = (props) => {
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
   const [id, setId] = useState('');
-  const [uid, setUid] = useState('');
+  const [{ isLoading }, dispatch] = useDataLayerValue();
 
   const handleEdit = () => {
     if (edit) {
@@ -51,7 +53,6 @@ const Dashboard = (props) => {
     setTitle('');
     setNote('');
     setId('');
-    setUid('');
   };
 
   const handleAdd = () => {
@@ -68,12 +69,20 @@ const Dashboard = (props) => {
     setTitle(title);
     setNote(note);
     setId(id);
-    setUid(uid);
+  };
+
+  const setLoader = (isLoading) => {
+    dispatch({
+      type: actionTypes.SET_LOADER,
+      isLoading: isLoading,
+    });
   };
 
   const deleteAll = async () => {
+    setLoader(true);
     const ids = props.notes.map((n) => n.id);
     await deleteMultiple(ids, props.uid);
+    setLoader(false);
     props.getTrashed();
   };
 
@@ -94,7 +103,7 @@ const Dashboard = (props) => {
           title={title}
           note={note}
           id={id}
-          uid={uid}
+          uid={props.uid}
           onAdd={handleAdd}
           handleEdit={handleEdit}
           closeEdit={closeEdit}
