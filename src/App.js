@@ -5,6 +5,7 @@ import Login from './components/login/Login.js';
 import Register from './components/login/Register';
 import Reset from './components/login/Reset';
 import SimpleBackDrop from './components/UI/SimpleBackDrop';
+import SimpleSnackbar from './components/UI/SimpleSnackbar';
 import { useDataLayerValue } from './context-api/Datalayer';
 import { darkTheme, lightTheme } from './shared/ui-themes.js';
 
@@ -16,6 +17,7 @@ const App = () => {
       <CssBaseline />
       <Paper sx={{ height: '100%' }}>
         <SimpleBackDrop />
+        <SimpleSnackbar />
         <Router>
           <Routes>
             <Route path="/" element={<Login />}></Route>

@@ -13,13 +13,13 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDataLayerValue } from '../../../context-api/Datalayer';
 import { actionTypes } from '../../../context-api/reducer';
 import { addNote, auth, editNote } from '../../../firebase';
+import SimpleSnackbar from '../../UI/SimpleSnackbar';
 
 const AddNote = (props) => {
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
   const [isUpdate, setUpdate] = useState(false);
-  const [error, setError] = useState('');
-  const [{ isLoading }, dispatch] = useDataLayerValue();
+  const [{ isLoading, snackbar }, dispatch] = useDataLayerValue();
 
   const handleEdit = () => {
     props.handleEdit();
@@ -36,7 +36,6 @@ const AddNote = (props) => {
   const closeEdit = () => {
     setTitle('');
     setNote('');
-    setError('');
     setUpdate(false);
     props.closeEdit();
   };
@@ -48,18 +47,29 @@ const AddNote = (props) => {
     });
   };
 
+  const setSnackBar = (isError, message) => {
+    dispatch({
+      type: actionTypes.SET_SNACKBAR,
+      snackbar: {
+        isOpen: true,
+        isError: isError,
+        message: message,
+      },
+    });
+  };
+
   const addNoteToDB = async () => {
     setLoader(true);
     try {
       await addNote(title, note, props.uid);
+      setSnackBar(false, 'Note saved successfully.');
     } catch (err) {
       console.log(err);
-      setError('An error occured while adding note');
+      setSnackBar(true, 'An error occured while adding note.');
     }
     setLoader(false);
     setTitle('');
     setNote('');
-    setError('');
     props.closeEdit();
     props.onAdd();
   };
@@ -68,14 +78,14 @@ const AddNote = (props) => {
     setLoader(true);
     try {
       await editNote(title, note, props.uid, props.id);
+      setSnackBar(false, 'Note updated successfully.');
     } catch (err) {
       console.log(err);
-      setError('An error occured while updating note');
+      setSnackBar(true, 'An error occured while updating note.');
     }
     setLoader(false);
     setTitle('');
     setNote('');
-    setError('');
     setUpdate(false);
     props.closeEdit();
     props.onAdd();
@@ -84,7 +94,7 @@ const AddNote = (props) => {
   const addEditNote = async (e) => {
     e.preventDefault();
     if (note.trim().length === 0 || title.trim().length === 0) {
-      setError('Please fill data');
+      setSnackBar(true, 'Please fill...');
       return;
     }
     if (isUpdate) {
