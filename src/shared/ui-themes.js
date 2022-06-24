@@ -1,5 +1,6 @@
 import { Switch } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
+import { pink, yellow } from '@mui/material/colors';
 import MuiDrawer from '@mui/material/Drawer';
 import { createTheme, styled } from '@mui/material/styles';
 
@@ -32,6 +33,10 @@ const styles = {
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
+    primary: {
+      main: '#fbc02d',
+    },
+    secondary: pink,
   },
   ...styles,
 });
@@ -39,6 +44,8 @@ export const lightTheme = createTheme({
 export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    primary: yellow,
+    secondary: pink,
   },
   ...styles,
 });
