@@ -1,4 +1,4 @@
-import { Box, CssBaseline } from '@mui/material';
+import { Box } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
@@ -121,8 +121,7 @@ const Layout = () => {
   }, [fetchDataFromFireStore, loading, navigate, setLoader, user]);
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
+    <Box sx={{ display: 'flex', height: '100vh' }}>
       <Header user={user} />
       <SideDrawer
         getNotes={handleGetNotes}

@@ -1,4 +1,4 @@
-import { Paper, ThemeProvider } from '@mui/material';
+import { CssBaseline, Paper, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Login from './components/login/Login.js';
@@ -13,7 +13,8 @@ const App = () => {
 
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <Paper sx={{ height: '100vh' }}>
+      <CssBaseline />
+      <Paper sx={{ height: '100%' }}>
         <SimpleBackDrop />
         <Router>
           <Routes>

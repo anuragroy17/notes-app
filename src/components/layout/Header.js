@@ -89,11 +89,12 @@ const Header = (props) => {
       setLoader(false);
     };
 
-    if (!props.user?.displayName) {
+    if (props.user && !props.user.displayName) {
       fetchUserName();
     } else {
-      setName(props.user?.displayName);
+      return;
     }
+    setName(props.user?.displayName);
   }, [props.user, setLoader]);
 
   return (

@@ -5,22 +5,42 @@ import { createTheme, styled } from '@mui/material/styles';
 
 export const drawerWidth = 240;
 
-export const lightTheme = createTheme({
+const styles = {
   typography: {
     fontFamily: ['Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'].join(','),
   },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          scrollbarColor: '#1e1e24',
+          '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
+            width: '0.25rem',
+          },
+          '&::-webkit-scrollbar-track, & *::-webkit-scrollbar-track': {
+            backgroundColor: '#1e1e24',
+          },
+          '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
+            backgroundColor: '#570978',
+          },
+        },
+      },
+    },
+  },
+};
+
+export const lightTheme = createTheme({
   palette: {
     mode: 'light',
   },
+  ...styles,
 });
 
 export const darkTheme = createTheme({
-  typography: {
-    fontFamily: ['Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'].join(','),
-  },
   palette: {
     mode: 'dark',
   },
+  ...styles,
 });
 
 const openedMixin = (theme) => ({

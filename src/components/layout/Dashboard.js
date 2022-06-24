@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardMedia,
-  CssBaseline,
   Fab,
   Tooltip,
   Typography,
@@ -94,7 +93,6 @@ const Dashboard = (props) => {
         overflowX: 'hidden',
       }}
     >
-      <CssBaseline />
       <DrawerHeader />
       {props.showAddNote && (
         <AddNote
