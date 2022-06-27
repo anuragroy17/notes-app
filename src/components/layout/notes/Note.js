@@ -88,7 +88,16 @@ const Note = (props) => {
               </Typography>
             </Tooltip>
           }
-          subheader={props.createdDate}
+          subheader={
+            <Typography
+              sx={{
+                fontSize: '11px',
+                fontStyle: 'oblique',
+              }}
+            >
+              {props.createdDate}
+            </Typography>
+          }
           sx={{ display: 'block', overflow: 'hidden' }}
         />
         <CardContent sx={{ paddingBottom: '3px' }}>

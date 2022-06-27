@@ -8,12 +8,13 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDataLayerValue } from '../../../context-api/Datalayer';
 import { actionTypes } from '../../../context-api/reducer';
 import { addNote, editNote } from '../../../firebase';
 
 const AddNote = (props) => {
+  const inputRef = useRef();
   const initialValues = {
     title: '',
     note: '',
@@ -40,13 +41,15 @@ const AddNote = (props) => {
   const validate = (values) => {
     const errors = {};
 
-    if (!values.title || values.title.trim() === '') {
-      errors.title = 'Title is required!';
-    } else if (values.title.length < 4) {
-      errors.title = 'Title must be more than 4 characters';
-    } else if (values.title.length > 25) {
-      errors.title = 'Title cannot exceed more than 25 characters';
-    }
+    /* Un Comment if title needs to be mandatory */
+
+    // if (!values.title || values.title.trim() === '') {
+    //   errors.title = 'Title is required!';
+    // } else if (values.title.length < 4) {
+    //   errors.title = 'Title must be more than 4 characters';
+    // } else if (values.title.length > 25) {
+    //   errors.title = 'Title cannot exceed more than 25 characters';
+    // }
 
     if (!values.note || values.note.trim() === '') {
       errors.note = 'Note is required';
@@ -136,6 +139,16 @@ const AddNote = (props) => {
   };
 
   useEffect(() => {
+    // const timeout = setTimeout(() => {
+    inputRef.current.focus();
+    // }, 100);
+
+    // return () => {
+    //   clearTimeout(timeout);
+    // };
+  }, [props.edit]);
+
+  useEffect(() => {
     if (props.isUpdate) {
       setFormValues({ title: props.title, note: props.note });
       setOldNote(props.note);
@@ -162,7 +175,7 @@ const AddNote = (props) => {
       </Typography>
       <Box
         sx={{
-          padding: '20px',
+          padding: '20px 20px 0 20px',
           transition: 'display 2s',
           ...(!props.edit && { display: 'none' }),
         }}
@@ -173,7 +186,8 @@ const AddNote = (props) => {
             helperText={formErrors.title}
             id="standard-basic"
             label="Title.."
-            variant="standard"
+            variant="outlined"
+            size="small"
             name="title"
             value={formValues.title}
             onChange={handleChange}
@@ -190,7 +204,9 @@ const AddNote = (props) => {
             name="note"
             value={formValues.note}
             onChange={handleChange}
-            variant="standard"
+            inputRef={inputRef}
+            variant="outlined"
+            size="small"
             sx={{
               marginTop: '20px',
             }}
