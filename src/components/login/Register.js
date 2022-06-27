@@ -144,7 +144,7 @@ const Register = () => {
 
       <Box component="form" onSubmit={handleRegister} noValidate sx={{ mt: 1 }}>
         <TextField
-          error={formErrors.name}
+          error={formErrors.name && formErrors.name !== ''}
           helperText={formErrors.name}
           margin="normal"
           required
@@ -159,7 +159,7 @@ const Register = () => {
           autoFocus
         />
         <TextField
-          error={formErrors.email}
+          error={formErrors.email && formErrors.email !== ''}
           helperText={formErrors.email}
           margin="normal"
           required
@@ -174,7 +174,7 @@ const Register = () => {
           onChange={handleChange}
         />
         <TextField
-          error={formErrors.password}
+          error={formErrors.password && formErrors.password !== ''}
           helperText={formErrors.password}
           margin="normal"
           required
@@ -189,7 +189,9 @@ const Register = () => {
           autoComplete="current-password"
         />
         <TextField
-          error={formErrors.passwordConfirm}
+          error={
+            formErrors.passwordConfirm && formErrors.passwordConfirm !== ''
+          }
           helperText={formErrors.passwordConfirm}
           margin="normal"
           required

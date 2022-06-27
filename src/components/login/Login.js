@@ -141,7 +141,7 @@ const Login = () => {
 
       <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
         <TextField
-          error={formErrors.email}
+          error={formErrors.email && formErrors.email !== ''}
           helperText={formErrors.email}
           margin="normal"
           required
@@ -157,7 +157,7 @@ const Login = () => {
           autoFocus
         />
         <TextField
-          error={formErrors.password}
+          error={formErrors.password && formErrors.password !== ''}
           helperText={formErrors.password}
           margin="normal"
           required
