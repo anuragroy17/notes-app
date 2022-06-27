@@ -14,15 +14,26 @@ const styles = {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          scrollbarColor: '#1e1e24',
           '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
             width: '0.25rem',
           },
           '&::-webkit-scrollbar-track, & *::-webkit-scrollbar-track': {
-            backgroundColor: '#1e1e24',
+            backgroundColor: '#383518',
           },
           '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
-            backgroundColor: '#570978',
+            backgroundColor: '#383518',
+          },
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          '& .hidden-button': {
+            visibility: 'hidden',
+          },
+          '&:hover .hidden-button': {
+            visibility: 'visible',
           },
         },
       },
@@ -116,11 +127,11 @@ export const AppBar = styled(MuiAppBar, {
 }));
 
 export const DarkModeSwitch = styled(Switch)(({ theme }) => ({
-  width: 50,
-  height: 26,
+  width: 62,
+  height: 34,
   padding: 7,
   '& .MuiSwitch-switchBase': {
-    marginTop: 2,
+    margin: 1,
     padding: 0,
     transform: 'translateX(6px)',
     '&.Mui-checked': {
@@ -139,8 +150,8 @@ export const DarkModeSwitch = styled(Switch)(({ theme }) => ({
   },
   '& .MuiSwitch-thumb': {
     backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
-    width: 22,
-    height: 22,
+    width: 32,
+    height: 32,
     '&:before': {
       content: "''",
       position: 'absolute',

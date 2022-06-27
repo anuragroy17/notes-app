@@ -1,4 +1,6 @@
 import { AccountCircle, Logout } from '@mui/icons-material';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DescriptionSharpIcon from '@mui/icons-material/DescriptionSharp';
@@ -10,12 +12,10 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
 import { useDataLayerValue } from '../../context-api/Datalayer';
 import { actionTypes } from '../../context-api/reducer';
 import { auth, db, logout } from '../../firebase';
-import { AppBar, DarkModeSwitch } from '../../shared/ui-themes';
+import { AppBar } from '../../shared/ui-themes';
 import { IgnoreDisabledListItem } from '../../shared/utils';
 
 const Header = (props) => {
@@ -140,13 +140,14 @@ const Header = (props) => {
         </Typography>
         {auth && (
           <div>
-            <Tooltip title="Set Dark Mode">
-              <DarkModeSwitch
-                checked={isDark}
-                onChange={setTheme}
-                size="small"
-                inputProps={{ 'aria-label': 'controlled' }}
-              />
+            <Tooltip title={`Change Mode`}>
+              <IconButton sx={{ ml: 1 }} onClick={setTheme} color="inherit">
+                {theme.palette.mode === 'dark' ? (
+                  <Brightness7Icon />
+                ) : (
+                  <Brightness4Icon />
+                )}
+              </IconButton>
             </Tooltip>
             <Tooltip title="Open User Menu">
               <IconButton

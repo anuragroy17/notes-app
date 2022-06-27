@@ -7,6 +7,7 @@ import {
   IconButton,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { useState } from 'react';
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
@@ -16,10 +17,12 @@ import { setLocation, deleteNote } from '../../../firebase';
 import { useDataLayerValue } from '../../../context-api/Datalayer';
 import { actionTypes } from '../../../context-api/reducer';
 import AlertDialog from '../../UI/AlertDialog';
+import { useTheme } from '@emotion/react';
 
 const Note = (props) => {
-  const [show, setShow] = useState(false);
   const [prompt, setPrompt] = useState(false);
+  const theme = useTheme();
+  const isPhone = useMediaQuery(theme.breakpoints.down('sm'));
   const [{ isLoading }, dispatch] = useDataLayerValue();
 
   const setLoader = (isLoading) => {
@@ -76,8 +79,6 @@ const Note = (props) => {
       />
       <Card
         variant="outlined"
-        onMouseOver={() => setShow(true)}
-        onMouseOut={() => setShow(false)}
         sx={{ width: 200, borderRadius: '20px', marginBottom: '10px' }}
       >
         <CardHeader
@@ -121,7 +122,7 @@ const Note = (props) => {
             <Tooltip title="Edit">
               <IconButton
                 aria-label="edit"
-                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={editNote}
               >
                 <Edit />
@@ -133,7 +134,7 @@ const Note = (props) => {
             <Tooltip title="Archive">
               <IconButton
                 aria-label="archive"
-                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={() => setLocationinFS('isArchived', true)}
               >
                 <Archive />
@@ -144,7 +145,7 @@ const Note = (props) => {
             <Tooltip title="Unarchive">
               <IconButton
                 aria-label="archive"
-                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={() => setLocationinFS('isNote', true)}
               >
                 <UnarchiveIcon />
@@ -155,7 +156,7 @@ const Note = (props) => {
             <Tooltip title="Restore">
               <IconButton
                 aria-label="delete"
-                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={() => setLocationinFS('isNote', true)}
               >
                 <RestoreFromTrashIcon />
@@ -166,7 +167,7 @@ const Note = (props) => {
             <Tooltip title="Delete Forever">
               <IconButton
                 aria-label="delete"
-                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={openDialog}
               >
                 <DeleteForeverIcon />
@@ -177,7 +178,7 @@ const Note = (props) => {
             <Tooltip title="Delete">
               <IconButton
                 aria-label="delete"
-                sx={{ visibility: show ? 'visible' : 'hidden' }}
+                className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={() => setLocationinFS('isTrashed', true)}
               >
                 <Delete />
