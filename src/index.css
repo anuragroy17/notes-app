@@ -10,6 +10,26 @@ body {
     box-sizing: border-box;
 }
 
+.link:visited {
+    color: inherit;
+}
+
+a {
+    color: #4B66FF;
+    text-decoration: none;
+}
+
+a {}
+
+a:link,
+a:visited {
+    color: #4B66FF;
+}
+
+a:hover {
+    color: #4B66FF;
+}
+
 /* .MuiBox-root::-webkit-scrollbar {
     width: 0.25rem;
 }

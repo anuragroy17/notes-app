@@ -19,26 +19,39 @@ import { actionTypes } from '../../context-api/reducer';
 
 const Reset = () => {
   const [email, setEmail] = useState('');
+  const [emailErrors, setEmailErrors] = useState('');
+  const [isSubmit, setIsSubmit] = useState(false);
+
   const [user, loading] = useAuthState(auth);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [{ isLoading }, dispatch] = useDataLayerValue();
   const navigate = useNavigate();
 
-  const reset = async () => {
-    setLoader(true);
-    try {
-      setMessage('');
-      setError('');
-      await sendPasswordReset(email);
-      setMessage(
-        'Check your inbox for further instructions. If not found, check Spam folder'
-      );
-    } catch (err) {
-      console.log(err);
-      setError('Failed to reset password');
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEmail(e.target.value);
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    setError('');
+    setEmailErrors(validate(email));
+    setIsSubmit(true);
+  };
+
+  const validate = (email) => {
+    let emailError = '';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+    if (!email || email.trim() === '') {
+      emailError = 'Email is required!';
+    } else if (!emailRegex.test(email)) {
+      emailError = 'This is not a valid email format!';
     }
-    setLoader(false);
+
+    return emailError;
   };
 
   const setLoader = useCallback(
@@ -50,6 +63,31 @@ const Reset = () => {
     },
     [dispatch]
   );
+
+  useEffect(() => {
+    const reset = async () => {
+      setLoader(true);
+      try {
+        setMessage('');
+        setError('');
+        await sendPasswordReset(email);
+        setMessage(
+          'Check your inbox for further instructions. If not found, check Spam folder'
+        );
+      } catch (err) {
+        console.log(err);
+        setError('Failed to reset password');
+      }
+      setEmailErrors();
+      setIsSubmit(false);
+      setLoader(false);
+    };
+
+    if (emailErrors === 0 && isSubmit) {
+      console.log(test);
+      reset();
+    }
+  }, [email, emailErrors, isSubmit, setLoader]);
 
   useEffect(() => {
     if (loading) {
@@ -80,8 +118,10 @@ const Reset = () => {
         </Alert>
       )}
 
-      <Box component="form" onSubmit={reset} noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={handleRegister} noValidate sx={{ mt: 1 }}>
         <TextField
+          error={emailErrors}
+          helperText={emailErrors}
           margin="normal"
           required
           fullWidth
@@ -92,7 +132,7 @@ const Reset = () => {
           autoComplete="email"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleChange}
           autoFocus
         />
         <Button
@@ -108,7 +148,11 @@ const Reset = () => {
 
         <Grid container>
           <Grid item>
-            Need an account? <Link to="/register">Register</Link> now.
+            Need an account?{' '}
+            <Link to="/register" style={{ textDecoration: 'none' }}>
+              Register
+            </Link>{' '}
+            now.
           </Grid>
         </Grid>
       </Box>

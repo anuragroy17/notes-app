@@ -1,52 +1,80 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { Google } from '@mui/icons-material';
+import LoginIcon from '@mui/icons-material/Login';
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  Grid,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDataLayerValue } from '../../context-api/Datalayer';
+import { actionTypes } from '../../context-api/reducer';
 import {
   auth,
   logInWithEmailAndPassword,
   signInWithGoogle,
 } from '../../firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import {
-  Typography,
-  Alert,
-  Box,
-  TextField,
-  Grid,
-  Button,
-  Avatar,
-  Container,
-} from '@mui/material';
-import { Google } from '@mui/icons-material';
-import LoginIcon from '@mui/icons-material/Login';
 import LoginContainer from '../UI/LoginContainer';
-import { useDataLayerValue } from '../../context-api/Datalayer';
-import { actionTypes } from '../../context-api/reducer';
-import { useTheme } from '@emotion/react';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const initialValues = {
+    email: '',
+    password: '',
+  };
+
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmit, setIsSubmit] = useState(false);
+
   const [error, setError] = useState('');
   const [user, loading] = useAuthState(auth);
   const [{ isLoading }, dispatch] = useDataLayerValue();
-  const theme = useTheme();
   const navigate = useNavigate();
 
-  const login = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevState) => {
+      return { ...prevState, [name]: value };
+    });
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setLoader(true);
-    try {
-      setError('');
-      await logInWithEmailAndPassword(email, password);
-    } catch (err) {
-      console.log(err);
-      setError('Failed to log in');
+    setError('');
+    setFormErrors(validate(formValues));
+    setIsSubmit(true);
+  };
+
+  const validate = (values) => {
+    const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+    if (!values.email || values.email.trim() === '') {
+      errors.email = 'Email is required!';
+    } else if (!emailRegex.test(values.email)) {
+      errors.email = 'This is not a valid email format!';
     }
-    setLoader(false);
+
+    if (!values.password || values.password.trim() === '') {
+      errors.password = 'Password is required';
+    } else if (values.password.length < 4) {
+      errors.password = 'Password must be more than 4 characters';
+    } else if (values.password.length > 10) {
+      errors.password = 'Password cannot exceed more than 10 characters';
+    }
+
+    return errors;
   };
 
   const googleOAuth = async () => {
+    setFormErrors({});
     setLoader(true);
+    setIsSubmit(false);
     try {
       setError('');
       await signInWithGoogle();
@@ -68,6 +96,26 @@ const Login = () => {
   );
 
   useEffect(() => {
+    const login = async () => {
+      setLoader(true);
+      try {
+        setError('');
+        await logInWithEmailAndPassword(formValues.email, formValues.password);
+      } catch (err) {
+        console.log(err);
+        setError('Failed to log in');
+      }
+      setFormErrors({});
+      setIsSubmit(false);
+      setLoader(false);
+    };
+
+    if (Object.keys(formErrors).length === 0 && isSubmit) {
+      login();
+    }
+  }, [formErrors, formValues.email, formValues.password, isSubmit, setLoader]);
+
+  useEffect(() => {
     if (loading) {
       // maybe trigger a loading screen
       setLoader(true);
@@ -85,17 +133,16 @@ const Login = () => {
       <Typography component="h1" variant="h5">
         Scribbly - Log In
       </Typography>
-      <Typography component="h1" variant="h5">
-        Scribbly - Log In
-      </Typography>
       {error && (
         <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="error">
           {error}
         </Alert>
       )}
 
-      <Box component="form" onSubmit={login} noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
         <TextField
+          error={formErrors.email}
+          helperText={formErrors.email}
           margin="normal"
           required
           fullWidth
@@ -105,11 +152,13 @@ const Login = () => {
           name="email"
           autoComplete="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formValues.email}
+          onChange={handleChange}
           autoFocus
         />
         <TextField
+          error={formErrors.password}
+          helperText={formErrors.password}
           margin="normal"
           required
           fullWidth
@@ -118,8 +167,8 @@ const Login = () => {
           label="Password"
           type="password"
           id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={formValues.password}
+          onChange={handleChange}
           autoComplete="current-password"
         />
         <Button
