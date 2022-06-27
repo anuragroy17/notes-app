@@ -16,6 +16,7 @@ import { addNote, editNote } from '../../../firebase';
 const AddNote = (props) => {
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
+  const [oldNote, setOldNote] = useState('');
 
   const [isUpdate, setUpdate] = useState(false);
   const [{ isLoading, snackbar }, dispatch] = useDataLayerValue();
@@ -35,6 +36,7 @@ const AddNote = (props) => {
   const closeEdit = () => {
     setTitle('');
     setNote('');
+    setOldNote('');
     setUpdate(false);
     props.closeEdit();
   };
@@ -90,23 +92,53 @@ const AddNote = (props) => {
     props.onAdd();
   };
 
-  const addEditNote = async (e) => {
+  const addEditNote = (e) => {
     e.preventDefault();
-    if (note.trim().length === 0 || title.trim().length === 0) {
-      setSnackBar(true, 'Please fill...');
-      return;
+    const isSubmit = validateFields();
+
+    if (isSubmit) {
+      if (isUpdate) {
+        updateNoteToDB();
+        return;
+      }
+      addNoteToDB();
     }
+  };
+
+  const validateFields = () => {
+    if (!title || title.trim() === '') {
+      setSnackBar(true, 'Title is required!');
+      return false;
+    } else if (title.length < 4) {
+      setSnackBar(true, 'Title must be more than 4 characters');
+      return false;
+    } else if (title.length > 25) {
+      setSnackBar(true, 'Title cannot exceed more than 25 characters');
+      return false;
+    }
+
+    if (!note || note.trim() === '') {
+      setSnackBar(true, 'Note is required');
+      return false;
+    } else if (note.length < 4) {
+      setSnackBar(true, 'Note must be more than 4 characters');
+      return false;
+    }
+
     if (isUpdate) {
-      updateNoteToDB();
-      return;
+      if (note === oldNote) {
+        setSnackBar(true, 'Note not updated');
+        return false;
+      }
     }
-    addNoteToDB();
+    return true;
   };
 
   useEffect(() => {
     if (props.isUpdate) {
       setTitle(props.title);
       setNote(props.note);
+      setOldNote(props.note);
       setUpdate(true);
     }
   }, [props.isUpdate, props.note, props.title]);
