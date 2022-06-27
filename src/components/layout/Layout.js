@@ -15,7 +15,7 @@ const Layout = () => {
   const [showDeleteAll, setShowDeleteAll] = useState(false);
   const [showAddNote, setShowAddNote] = useState(true);
 
-  const [fetchNotes, setFetchNotes] = useState(false);
+  const [fetchNotes, setFetchNotes] = useState(true);
   const [fetchArchived, setFetchArchived] = useState(false);
   const [fetchTrashed, setFetchTrashed] = useState(false);
   const [{ isOpen, isLoading }, dispatch] = useDataLayerValue();

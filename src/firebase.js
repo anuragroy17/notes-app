@@ -94,7 +94,7 @@ const logout = async () => {
   try {
     await signOut(auth);
   } catch (err) {
-    console.log(err.message);
+    throw new Error(err.message);
   }
 };
 
