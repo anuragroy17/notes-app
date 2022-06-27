@@ -52,7 +52,7 @@ const Register = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 
     if (!values.name || values.name.trim() === '') {
-      errors.name = 'name is required!';
+      errors.name = 'Name is required!';
     }
 
     if (!values.email || values.email.trim() === '') {
@@ -70,7 +70,7 @@ const Register = () => {
     }
 
     if (!values.passwordConfirm) {
-      errors.passwordConfirm = 'Password is required';
+      errors.passwordConfirm = 'Confirm Password is required';
     } else if (values.password !== values.passwordConfirm) {
       errors.passwordConfirm = 'Passwords do not match';
     }
