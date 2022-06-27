@@ -14,9 +14,13 @@ import { actionTypes } from '../../../context-api/reducer';
 import { addNote, editNote } from '../../../firebase';
 
 const AddNote = (props) => {
-  const [title, setTitle] = useState('');
-  const [note, setNote] = useState('');
+  const initialValues = {
+    title: '',
+    note: '',
+  };
   const [oldNote, setOldNote] = useState('');
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
 
   const [isUpdate, setUpdate] = useState(false);
   const [{ isLoading, snackbar }, dispatch] = useDataLayerValue();
@@ -25,18 +29,43 @@ const AddNote = (props) => {
     props.handleEdit();
   };
 
-  const handleNoteInput = (event) => {
-    setNote(event.target.value);
+  const handleChange = (e) => {
+    console.log('hghgh');
+    const { name, value } = e.target;
+    setFormValues((prevState) => {
+      return { ...prevState, [name]: value };
+    });
   };
 
-  const handleTitleInput = (event) => {
-    setTitle(event.target.value);
+  const validate = (values) => {
+    const errors = {};
+
+    if (!values.title || values.title.trim() === '') {
+      errors.title = 'Title is required!';
+    } else if (values.title.length < 4) {
+      errors.title = 'Title must be more than 4 characters';
+    } else if (values.title.length > 25) {
+      errors.title = 'Title cannot exceed more than 25 characters';
+    }
+
+    if (!values.note || values.note.trim() === '') {
+      errors.note = 'Note is required';
+    } else if (values.note.length < 4) {
+      errors.note = 'Note must be more than 4 characters';
+    }
+
+    if (isUpdate) {
+      if (oldNote === values.note) {
+        errors.note = 'Please update note';
+      }
+    }
+
+    return errors;
   };
 
   const closeEdit = () => {
-    setTitle('');
-    setNote('');
-    setOldNote('');
+    setFormValues(initialValues);
+    setFormErrors({});
     setUpdate(false);
     props.closeEdit();
   };
@@ -62,15 +91,14 @@ const AddNote = (props) => {
   const addNoteToDB = async () => {
     setLoader(true);
     try {
-      await addNote(title, note, props.uid);
+      await addNote(formValues.title, formValues.note, props.uid);
       setSnackBar(false, 'Note saved successfully.');
     } catch (err) {
       console.log(err);
       setSnackBar(true, 'An error occured while adding note.');
     }
     setLoader(false);
-    setTitle('');
-    setNote('');
+    setFormValues(initialValues);
     props.closeEdit();
     props.onAdd();
   };
@@ -78,15 +106,14 @@ const AddNote = (props) => {
   const updateNoteToDB = async () => {
     setLoader(true);
     try {
-      await editNote(title, note, props.uid, props.id);
+      await editNote(formValues.title, formValues.note, props.uid, props.id);
       setSnackBar(false, 'Note updated successfully.');
     } catch (err) {
       console.log(err);
       setSnackBar(true, 'An error occured while updating note.');
     }
     setLoader(false);
-    setTitle('');
-    setNote('');
+    setFormValues(initialValues);
     setUpdate(false);
     props.closeEdit();
     props.onAdd();
@@ -94,8 +121,11 @@ const AddNote = (props) => {
 
   const addEditNote = (e) => {
     e.preventDefault();
-    const isSubmit = validateFields();
+    const errors = validate(formValues);
+    const isSubmit = Object.keys(errors).length === 0;
+    setFormErrors(errors);
 
+    console.log(isSubmit);
     if (isSubmit) {
       if (isUpdate) {
         updateNoteToDB();
@@ -105,39 +135,9 @@ const AddNote = (props) => {
     }
   };
 
-  const validateFields = () => {
-    if (!title || title.trim() === '') {
-      setSnackBar(true, 'Title is required!');
-      return false;
-    } else if (title.length < 4) {
-      setSnackBar(true, 'Title must be more than 4 characters');
-      return false;
-    } else if (title.length > 25) {
-      setSnackBar(true, 'Title cannot exceed more than 25 characters');
-      return false;
-    }
-
-    if (!note || note.trim() === '') {
-      setSnackBar(true, 'Note is required');
-      return false;
-    } else if (note.length < 4) {
-      setSnackBar(true, 'Note must be more than 4 characters');
-      return false;
-    }
-
-    if (isUpdate) {
-      if (note === oldNote) {
-        setSnackBar(true, 'Note not updated');
-        return false;
-      }
-    }
-    return true;
-  };
-
   useEffect(() => {
     if (props.isUpdate) {
-      setTitle(props.title);
-      setNote(props.note);
+      setFormValues({ title: props.title, note: props.note });
       setOldNote(props.note);
       setUpdate(true);
     }
@@ -169,24 +169,30 @@ const AddNote = (props) => {
       >
         <form onSubmit={addEditNote}>
           <TextField
+            error={formErrors.title && formErrors.title !== ''}
+            helperText={formErrors.title}
             id="standard-basic"
             label="Title.."
             variant="standard"
-            value={title}
-            onChange={handleTitleInput}
+            name="title"
+            value={formValues.title}
+            onChange={handleChange}
             fullWidth
           />
           <TextField
+            error={formErrors.note && formErrors.note !== ''}
+            helperText={formErrors.note}
             id="standard-multiline-flexible"
-            label="Write Something.."
+            label="Write a note.."
             multiline
             maxRows={4}
             fullWidth
-            value={note}
-            onChange={handleNoteInput}
+            name="note"
+            value={formValues.note}
+            onChange={handleChange}
             variant="standard"
             sx={{
-              marginTop: '10px',
+              marginTop: '20px',
             }}
           />
           <CardActions
