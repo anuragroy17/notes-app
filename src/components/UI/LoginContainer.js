@@ -39,9 +39,9 @@ const LoginContainer = (props) => {
         }}
       >
         {props.children}
-        <Tooltip title="Set Dark Mode">
+        <Tooltip title="Change Mode">
           <DarkModeSwitch
-            sx={{ marginTop: 3 }}
+            sx={{ marginTop: 2 }}
             checked={isDark}
             onChange={setTheme}
             inputProps={{ 'aria-label': 'controlled' }}
