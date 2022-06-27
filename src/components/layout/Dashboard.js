@@ -1,3 +1,4 @@
+import { useTheme } from '@emotion/react';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Masonry } from '@mui/lab';
 import {
@@ -8,6 +9,7 @@ import {
   Fab,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { useState } from 'react';
 import { useDataLayerValue } from '../../context-api/Datalayer';
@@ -41,6 +43,9 @@ const Dashboard = (props) => {
   const [id, setId] = useState('');
   const [prompt, setPrompt] = useState(false);
   const [{ isLoading }, dispatch] = useDataLayerValue();
+
+  const theme = useTheme();
+  const isPhone = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleEdit = () => {
     if (edit) {
@@ -100,6 +105,26 @@ const Dashboard = (props) => {
     deleteAll();
     setPrompt(false);
   };
+
+  const noteCards =
+    props.notes.length !== 0 &&
+    props.notes.map((note) => (
+      <Note
+        key={note.id}
+        id={note.id}
+        uid={props.uid}
+        title={note.title}
+        note={note.note}
+        isNote={note.isNote}
+        isArchived={note.isArchived}
+        isTrashed={note.isTrashed}
+        createdDate={`${
+          months[note.date.getMonth()]
+        } ${note.date.getDate()}, ${note.date.getFullYear()}`}
+        onClick={handleOnCLick}
+        editNote={editNote}
+      />
+    ));
 
   return (
     <>
@@ -178,39 +203,21 @@ const Dashboard = (props) => {
         )}
 
         <Box
-        // sx={{
-        // display: 'grid',
-        // gridTemplateColumns: 'repeat(auto-fill,minmax(auto,220px))',
-        // justifyContent: 'space-evenly',
-        // gridColumnGap: '10px',
-        // }}
+          sx={{
+            ...(isPhone && {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill,minmax(auto,220px))',
+              justifyContent: 'space-evenly',
+              gridColumnGap: '10px',
+            }),
+          }}
         >
-          <Masonry
-            columns={4}
-            spacing={2}
-            defaultHeight={450}
-            defaultColumns={4}
-            defaultSpacing={1}
-          >
-            {props.notes.length !== 0 &&
-              props.notes.map((note) => (
-                <Note
-                  key={note.id}
-                  id={note.id}
-                  uid={props.uid}
-                  title={note.title}
-                  note={note.note}
-                  isNote={note.isNote}
-                  isArchived={note.isArchived}
-                  isTrashed={note.isTrashed}
-                  createdDate={`${
-                    months[note.date.getMonth()]
-                  } ${note.date.getDate()}, ${note.date.getFullYear()}`}
-                  onClick={handleOnCLick}
-                  editNote={editNote}
-                />
-              ))}
-          </Masonry>
+          {!isPhone && (
+            <Masonry columns={{ sm: 2, md: 3, lg: 5 }} spacing={2}>
+              {noteCards}
+            </Masonry>
+          )}
+          {isPhone && noteCards}
         </Box>
       </Box>
     </>
