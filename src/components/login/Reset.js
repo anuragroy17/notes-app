@@ -63,11 +63,11 @@ const Reset = () => {
 
   return (
     <LoginContainer>
-      <Avatar sx={{ m: 1, bgcolor: '#FBBC04' }}>
+      <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
         <LockResetIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Password Reset
+        Scribbly - Password Reset
       </Typography>
       {error && (
         <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="error">

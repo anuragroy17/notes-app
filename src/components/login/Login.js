@@ -21,6 +21,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import LoginContainer from '../UI/LoginContainer';
 import { useDataLayerValue } from '../../context-api/Datalayer';
 import { actionTypes } from '../../context-api/reducer';
+import { useTheme } from '@emotion/react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -28,6 +29,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [user, loading] = useAuthState(auth);
   const [{ isLoading }, dispatch] = useDataLayerValue();
+  const theme = useTheme();
   const navigate = useNavigate();
 
   const login = async (e) => {
@@ -77,11 +79,14 @@ const Login = () => {
 
   return (
     <LoginContainer>
-      <Avatar sx={{ m: 1, bgcolor: '#FBBC04' }}>
+      <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
         <LoginIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Log In
+        Scribbly - Log In
+      </Typography>
+      <Typography component="h1" variant="h5">
+        Scribbly - Log In
       </Typography>
       {error && (
         <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="error">
