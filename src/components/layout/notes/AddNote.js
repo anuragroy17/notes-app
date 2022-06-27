@@ -17,15 +17,6 @@ const AddNote = (props) => {
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
 
-  const initialValues = {
-    title: '',
-    note: '',
-  };
-
-  const [formValues, setFormValues] = useState(initialValues);
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
-
   const [isUpdate, setUpdate] = useState(false);
   const [{ isLoading, snackbar }, dispatch] = useDataLayerValue();
 
