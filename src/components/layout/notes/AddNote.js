@@ -8,83 +8,150 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { useEffect, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { addNote, auth, editNote } from '../../../firebase';
+import { useEffect, useRef, useState } from 'react';
+import { useDataLayerValue } from '../../../context-api/Datalayer';
+import { actionTypes } from '../../../context-api/reducer';
+import { addNote, editNote } from '../../../firebase';
 
 const AddNote = (props) => {
-  const [title, setTitle] = useState('');
-  const [note, setNote] = useState('');
+  const inputRef = useRef();
+  const initialValues = {
+    title: '',
+    note: '',
+  };
+  const [oldNote, setOldNote] = useState('');
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
+
   const [isUpdate, setUpdate] = useState(false);
-  const [user, loading] = useAuthState(auth);
-  const [error, setError] = useState('');
+  const [{ isLoading, snackbar }, dispatch] = useDataLayerValue();
 
   const handleEdit = () => {
     props.handleEdit();
   };
 
-  const handleNoteInput = (event) => {
-    setNote(event.target.value);
+  const handleChange = (e) => {
+    console.log('hghgh');
+    const { name, value } = e.target;
+    setFormValues((prevState) => {
+      return { ...prevState, [name]: value };
+    });
   };
 
-  const handleTitleInput = (event) => {
-    setTitle(event.target.value);
+  const validate = (values) => {
+    const errors = {};
+
+    /* Un Comment if title needs to be mandatory */
+
+    // if (!values.title || values.title.trim() === '') {
+    //   errors.title = 'Title is required!';
+    // } else if (values.title.length < 4) {
+    //   errors.title = 'Title must be more than 4 characters';
+    // } else if (values.title.length > 25) {
+    //   errors.title = 'Title cannot exceed more than 25 characters';
+    // }
+
+    if (!values.note || values.note.trim() === '') {
+      errors.note = 'Note is required';
+    } else if (values.note.length < 4) {
+      errors.note = 'Note must be more than 4 characters';
+    }
+
+    if (isUpdate) {
+      if (oldNote === values.note) {
+        errors.note = 'Please update note';
+      }
+    }
+
+    return errors;
   };
 
   const closeEdit = () => {
-    setTitle('');
-    setNote('');
-    setError('');
+    setFormValues(initialValues);
+    setFormErrors({});
     setUpdate(false);
     props.closeEdit();
   };
 
+  const setLoader = (isLoading) => {
+    dispatch({
+      type: actionTypes.SET_LOADER,
+      isLoading: isLoading,
+    });
+  };
+
+  const setSnackBar = (isError, message) => {
+    dispatch({
+      type: actionTypes.SET_SNACKBAR,
+      snackbar: {
+        isOpen: true,
+        isError: isError,
+        message: message,
+      },
+    });
+  };
+
   const addNoteToDB = async () => {
+    setLoader(true);
     try {
-      await addNote(title, note, user?.uid);
+      await addNote(formValues.title, formValues.note, props.uid);
+      setSnackBar(false, 'Note saved successfully.');
     } catch (err) {
       console.log(err);
-      setError('An error occured while adding note');
+      setSnackBar(true, 'An error occured while adding note.');
     }
-    setTitle('');
-    setNote('');
-    setError('');
+    setLoader(false);
+    setFormValues(initialValues);
     props.closeEdit();
     props.onAdd();
   };
 
   const updateNoteToDB = async () => {
+    setLoader(true);
     try {
-      await editNote(title, note, props.uid, props.id);
+      await editNote(formValues.title, formValues.note, props.uid, props.id);
+      setSnackBar(false, 'Note updated successfully.');
     } catch (err) {
       console.log(err);
-      setError('An error occured while updating note');
+      setSnackBar(true, 'An error occured while updating note.');
     }
-    setTitle('');
-    setNote('');
-    setError('');
+    setLoader(false);
+    setFormValues(initialValues);
     setUpdate(false);
     props.closeEdit();
     props.onAdd();
   };
 
-  const addEditNote = async (e) => {
+  const addEditNote = (e) => {
     e.preventDefault();
-    if (note.trim().length === 0 || title.trim().length === 0) {
-      setError('Please fill data');
-      return;
+    const errors = validate(formValues);
+    const isSubmit = Object.keys(errors).length === 0;
+    setFormErrors(errors);
+
+    console.log(isSubmit);
+    if (isSubmit) {
+      if (isUpdate) {
+        updateNoteToDB();
+        return;
+      }
+      addNoteToDB();
     }
-    if (isUpdate) {
-      updateNoteToDB();
-      return;
-    }
-    addNoteToDB();
   };
 
   useEffect(() => {
+    // const timeout = setTimeout(() => {
+    inputRef.current.focus();
+    // }, 100);
+
+    // return () => {
+    //   clearTimeout(timeout);
+    // };
+  }, [props.edit]);
+
+  useEffect(() => {
     if (props.isUpdate) {
-      setTitle(props.title);
-      setNote(props.note);
+      setFormValues({ title: props.title, note: props.note });
+      setOldNote(props.note);
       setUpdate(true);
     }
   }, [props.isUpdate, props.note, props.title]);
@@ -108,31 +175,40 @@ const AddNote = (props) => {
       </Typography>
       <Box
         sx={{
-          padding: '20px',
+          padding: '20px 20px 0 20px',
           transition: 'display 2s',
           ...(!props.edit && { display: 'none' }),
         }}
       >
         <form onSubmit={addEditNote}>
           <TextField
+            error={formErrors.title && formErrors.title !== ''}
+            helperText={formErrors.title}
             id="standard-basic"
             label="Title.."
-            variant="standard"
-            value={title}
-            onChange={handleTitleInput}
+            variant="outlined"
+            size="small"
+            name="title"
+            value={formValues.title}
+            onChange={handleChange}
             fullWidth
           />
           <TextField
+            error={formErrors.note && formErrors.note !== ''}
+            helperText={formErrors.note}
             id="standard-multiline-flexible"
-            label="Write Something.."
+            label="Write a note.."
             multiline
             maxRows={4}
             fullWidth
-            value={note}
-            onChange={handleNoteInput}
-            variant="standard"
+            name="note"
+            value={formValues.note}
+            onChange={handleChange}
+            inputRef={inputRef}
+            variant="outlined"
+            size="small"
             sx={{
-              marginTop: '10px',
+              marginTop: '20px',
             }}
           />
           <CardActions

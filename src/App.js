@@ -1,9 +1,11 @@
-import { Paper, ThemeProvider } from '@mui/material';
+import { CssBaseline, Paper, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Login from './components/login/Login.js';
 import Register from './components/login/Register';
 import Reset from './components/login/Reset';
+import SimpleBackDrop from './components/UI/SimpleBackDrop';
+import SimpleSnackbar from './components/UI/SimpleSnackbar';
 import { useDataLayerValue } from './context-api/Datalayer';
 import { darkTheme, lightTheme } from './shared/ui-themes.js';
 
@@ -12,7 +14,10 @@ const App = () => {
 
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <Paper sx={{ height: '100vh' }}>
+      <CssBaseline />
+      <Paper sx={{ height: '100%' }}>
+        <SimpleBackDrop />
+        <SimpleSnackbar />
         <Router>
           <Routes>
             <Route path="/" element={<Login />}></Route>

@@ -10,14 +10,34 @@ body {
     box-sizing: border-box;
 }
 
-body::-webkit-scrollbar {
+.link:visited {
+    color: inherit;
+}
+
+a {
+    color: #4B66FF;
+    text-decoration: none;
+}
+
+a {}
+
+a:link,
+a:visited {
+    color: #4B66FF;
+}
+
+a:hover {
+    color: #4B66FF;
+}
+
+/* .MuiBox-root::-webkit-scrollbar {
     width: 0.25rem;
 }
 
-body::-webkit-scrollbar-track {
+.MuiBox-root::-webkit-scrollbar-track {
     background: #1e1e24;
 }
 
-body::-webkit-scrollbar-thumb {
+.MuiBox-root::-webkit-scrollbar-thumb {
     background: #570978;
-}
+} */

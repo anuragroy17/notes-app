@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -14,40 +14,96 @@ import {
 } from '@mui/material';
 import LockResetIcon from '@mui/icons-material/LockReset';
 import LoginContainer from '../UI/LoginContainer';
+import { useDataLayerValue } from '../../context-api/Datalayer';
+import { actionTypes } from '../../context-api/reducer';
 
 const Reset = () => {
   const [email, setEmail] = useState('');
+  const [emailErrors, setEmailErrors] = useState('');
+  const [isSubmit, setIsSubmit] = useState(false);
+
   const [user, loading] = useAuthState(auth);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [{ isLoading }, dispatch] = useDataLayerValue();
   const navigate = useNavigate();
 
-  const reset = async () => {
-    try {
-      setMessage('');
-      setError('');
-      await sendPasswordReset(email);
-      setMessage(
-        'Check your inbox for further instructions. If not found, check Spam folder'
-      );
-    } catch (err) {
-      console.log(err);
-      setError('Failed to reset password');
-    }
+  const handleChange = (e) => {
+    setEmail(e.target.value);
   };
 
+  const handleReset = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    setError('');
+    setEmailErrors(validate(email));
+    setIsSubmit(true);
+  };
+
+  const validate = (email) => {
+    let emailError = '';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+    if (!email || email.trim() === '') {
+      emailError = 'Email is required!';
+    } else if (!emailRegex.test(email)) {
+      emailError = 'This is not a valid email format!';
+    }
+
+    return emailError;
+  };
+
+  const setLoader = useCallback(
+    (isLoading) => {
+      dispatch({
+        type: actionTypes.SET_LOADER,
+        isLoading: isLoading,
+      });
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
-    if (loading) return;
+    const reset = async () => {
+      setLoader(true);
+      try {
+        setMessage('');
+        setError('');
+        await sendPasswordReset(email);
+        setMessage(
+          'Check your inbox for further instructions. If not found, check Spam folder'
+        );
+      } catch (err) {
+        console.log(err);
+        setError('Failed to reset password');
+      }
+      setEmailErrors('');
+      setIsSubmit(false);
+      setLoader(false);
+    };
+
+    if (emailErrors === '' && isSubmit) {
+      reset();
+    }
+  }, [email, emailErrors, isSubmit, setLoader]);
+
+  useEffect(() => {
+    if (loading) {
+      setLoader(true);
+      return;
+    }
+
+    setLoader(false);
     if (user) navigate('/dashboard');
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, setLoader]);
 
   return (
     <LoginContainer>
-      <Avatar sx={{ m: 1, bgcolor: '#FBBC04' }}>
+      <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
         <LockResetIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Password Reset
+        Scribbly - Password Reset
       </Typography>
       {error && (
         <Alert sx={{ mt: 1, width: 1, padding: '2px 5px' }} severity="error">
@@ -60,8 +116,10 @@ const Reset = () => {
         </Alert>
       )}
 
-      <Box component="form" onSubmit={reset} noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={handleReset} noValidate sx={{ mt: 1 }}>
         <TextField
+          error={emailErrors !== ''}
+          helperText={emailErrors}
           margin="normal"
           required
           fullWidth
@@ -72,7 +130,7 @@ const Reset = () => {
           autoComplete="email"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleChange}
           autoFocus
         />
         <Button
@@ -88,7 +146,11 @@ const Reset = () => {
 
         <Grid container>
           <Grid item>
-            Need an account? <Link to="/register">Register</Link> now.
+            Need an account?{' '}
+            <Link to="/register" style={{ textDecoration: 'none' }}>
+              Register
+            </Link>{' '}
+            now.
           </Grid>
         </Grid>
       </Box>
