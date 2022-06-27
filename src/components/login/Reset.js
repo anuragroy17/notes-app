@@ -29,11 +29,10 @@ const Reset = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setEmail(e.target.value);
   };
 
-  const handleRegister = async (e) => {
+  const handleReset = async (e) => {
     e.preventDefault();
     setMessage('');
     setError('');
@@ -78,13 +77,12 @@ const Reset = () => {
         console.log(err);
         setError('Failed to reset password');
       }
-      setEmailErrors();
+      setEmailErrors('');
       setIsSubmit(false);
       setLoader(false);
     };
 
-    if (emailErrors === 0 && isSubmit) {
-      console.log(test);
+    if (emailErrors === '' && isSubmit) {
       reset();
     }
   }, [email, emailErrors, isSubmit, setLoader]);
@@ -118,9 +116,9 @@ const Reset = () => {
         </Alert>
       )}
 
-      <Box component="form" onSubmit={handleRegister} noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={handleReset} noValidate sx={{ mt: 1 }}>
         <TextField
-          error={emailErrors}
+          error={emailErrors !== ''}
           helperText={emailErrors}
           margin="normal"
           required

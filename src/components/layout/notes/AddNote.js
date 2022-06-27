@@ -9,15 +9,23 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { useEffect, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDataLayerValue } from '../../../context-api/Datalayer';
 import { actionTypes } from '../../../context-api/reducer';
-import { addNote, auth, editNote } from '../../../firebase';
-import SimpleSnackbar from '../../UI/SimpleSnackbar';
+import { addNote, editNote } from '../../../firebase';
 
 const AddNote = (props) => {
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
+
+  const initialValues = {
+    title: '',
+    note: '',
+  };
+
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmit, setIsSubmit] = useState(false);
+
   const [isUpdate, setUpdate] = useState(false);
   const [{ isLoading, snackbar }, dispatch] = useDataLayerValue();
 
