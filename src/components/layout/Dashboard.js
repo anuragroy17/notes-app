@@ -1,4 +1,5 @@
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { Masonry } from '@mui/lab';
 import {
   Box,
   Card,
@@ -177,31 +178,39 @@ const Dashboard = (props) => {
         )}
 
         <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill,minmax(auto,220px))',
-            justifyContent: 'space-evenly',
-            gridColumnGap: '10px',
-          }}
+        // sx={{
+        // display: 'grid',
+        // gridTemplateColumns: 'repeat(auto-fill,minmax(auto,220px))',
+        // justifyContent: 'space-evenly',
+        // gridColumnGap: '10px',
+        // }}
         >
-          {props.notes.length !== 0 &&
-            props.notes.map((note) => (
-              <Note
-                key={note.id}
-                id={note.id}
-                uid={props.uid}
-                title={note.title}
-                note={note.note}
-                isNote={note.isNote}
-                isArchived={note.isArchived}
-                isTrashed={note.isTrashed}
-                createdDate={`${
-                  months[note.date.getMonth()]
-                } ${note.date.getDate()}, ${note.date.getFullYear()}`}
-                onClick={handleOnCLick}
-                editNote={editNote}
-              />
-            ))}
+          <Masonry
+            columns={4}
+            spacing={2}
+            defaultHeight={450}
+            defaultColumns={4}
+            defaultSpacing={1}
+          >
+            {props.notes.length !== 0 &&
+              props.notes.map((note) => (
+                <Note
+                  key={note.id}
+                  id={note.id}
+                  uid={props.uid}
+                  title={note.title}
+                  note={note.note}
+                  isNote={note.isNote}
+                  isArchived={note.isArchived}
+                  isTrashed={note.isTrashed}
+                  createdDate={`${
+                    months[note.date.getMonth()]
+                  } ${note.date.getDate()}, ${note.date.getFullYear()}`}
+                  onClick={handleOnCLick}
+                  editNote={editNote}
+                />
+              ))}
+          </Masonry>
         </Box>
       </Box>
     </>
