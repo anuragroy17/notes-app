@@ -63,6 +63,15 @@ const Reset = () => {
     [dispatch]
   );
 
+  const setErrorMessage = (message) => {
+    if (message.includes('auth/user-not-found')) {
+      setEmail('');
+      setError('User Not Found.');
+    } else {
+      setError('Failed to Reset Password.');
+    }
+  };
+
   useEffect(() => {
     const reset = async () => {
       setLoader(true);
@@ -74,8 +83,7 @@ const Reset = () => {
           'Check your inbox for further instructions. If not found, check Spam folder'
         );
       } catch (err) {
-        console.log(err);
-        setError('Failed to reset password');
+        setErrorMessage(err.message);
       }
       setEmailErrors('');
       setIsSubmit(false);

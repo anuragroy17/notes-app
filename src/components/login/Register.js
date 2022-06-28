@@ -18,9 +18,9 @@ import { actionTypes } from '../../context-api/reducer';
 
 const Register = () => {
   const initialValues = {
+    name: '',
     email: '',
     password: '',
-    name: '',
     passwordConfirm: '',
   };
 
@@ -87,6 +87,16 @@ const Register = () => {
     },
     [dispatch]
   );
+  const setErrorMessage = (message) => {
+    if (message.includes('auth/email-already-in-use')) {
+      setFormValues((prevState) => {
+        return { ...prevState, email: '', password: '', passwordConfirm: '' };
+      });
+      setError('User/Email Already Exists.');
+    } else {
+      setError('Failed to Register User.');
+    }
+  };
 
   useEffect(() => {
     const register = async () => {
@@ -99,8 +109,7 @@ const Register = () => {
           formValues.password
         );
       } catch (err) {
-        setError('Failed to create an account');
-        console.log(err);
+        setErrorMessage(err.message);
       }
       setFormErrors({});
       setIsSubmit(false);

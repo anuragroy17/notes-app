@@ -79,8 +79,7 @@ const Login = () => {
       setError('');
       await signInWithGoogle();
     } catch (err) {
-      console.log(err);
-      setError('Error in google sign in!');
+      setErrorMessage(err.message);
     }
     setLoader(false);
   };
@@ -95,6 +94,22 @@ const Login = () => {
     [dispatch]
   );
 
+  const setErrorMessage = (message) => {
+    if (message.includes('auth/user-not-found')) {
+      setFormValues(initialValues);
+      setError('User Not Found.');
+    } else if (message.includes('auth/wrong-password')) {
+      setFormValues((prevState) => {
+        return { ...prevState, password: '' };
+      });
+      setError('Wrong Password.');
+    } else if (message.includes('auth/popup-closed-by-user')) {
+      setError('Google Auth Popup Closed by User.');
+    } else {
+      setError('Login Failed.');
+    }
+  };
+
   useEffect(() => {
     const login = async () => {
       setLoader(true);
@@ -102,8 +117,7 @@ const Login = () => {
         setError('');
         await logInWithEmailAndPassword(formValues.email, formValues.password);
       } catch (err) {
-        console.log(err);
-        setError('Failed to log in');
+        setErrorMessage(err.message);
       }
       setFormErrors({});
       setIsSubmit(false);
@@ -113,6 +127,7 @@ const Login = () => {
     if (Object.keys(formErrors).length === 0 && isSubmit) {
       login();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formErrors, formValues.email, formValues.password, isSubmit, setLoader]);
 
   useEffect(() => {

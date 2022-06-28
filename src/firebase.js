@@ -54,7 +54,7 @@ const signInWithGoogle = async () => {
       });
     }
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -62,7 +62,7 @@ const logInWithEmailAndPassword = async (email, password) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -77,7 +77,7 @@ const registerWithEmailAndPassword = async (name, email, password) => {
       email,
     });
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -85,7 +85,7 @@ const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -93,7 +93,7 @@ const logout = async () => {
   try {
     await signOut(auth);
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -112,7 +112,7 @@ const addNote = async (title, note, uid) => {
     const notesRef = collection(userDataRef, uid, 'notes');
     await setDoc(doc(notesRef), saveNote);
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -126,7 +126,7 @@ const editNote = async (title, note, uid, id) => {
     };
     await updateDoc(noteRef, editNote);
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -135,7 +135,7 @@ const setLocation = async (locationObj, uid, id) => {
     const noteRef = doc(userDataRef, uid, 'notes', id);
     await updateDoc(noteRef, locationObj);
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -146,7 +146,7 @@ const getNotes = async (uid, queryClause) => {
     const querySnapshot = await getDocs(q);
     return querySnapshot;
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -155,7 +155,7 @@ const deleteNote = async (uid, id) => {
     const noteRef = doc(userDataRef, uid, 'notes', id);
     await deleteDoc(noteRef);
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -171,7 +171,7 @@ const deleteMultiple = async (noteIds, uid) => {
     });
     await batch.commit();
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
