@@ -29,7 +29,7 @@ const Register = () => {
   const [isSubmit, setIsSubmit] = useState(false);
 
   const [error, setError] = useState('');
-  const [user, loading] = useAuthState(auth);
+  const [user, fetchingUser] = useAuthState(auth);
   const [{ isLoading }, dispatch] = useDataLayerValue();
   const navigate = useNavigate();
 
@@ -120,13 +120,13 @@ const Register = () => {
   ]);
 
   useEffect(() => {
-    if (loading) {
+    if (fetchingUser) {
       setLoader(true);
       return;
     }
     setLoader(false);
     if (user) navigate('/notes');
-  }, [user, loading, navigate, setLoader]);
+  }, [user, fetchingUser, navigate, setLoader]);
 
   return (
     <LoginContainer>
@@ -208,7 +208,7 @@ const Register = () => {
         <Button
           fullWidth
           variant="contained"
-          disabled={loading}
+          disabled={fetchingUser || isLoading}
           type="submit"
           sx={{ mt: 2, mb: 2 }}
           disableElevation

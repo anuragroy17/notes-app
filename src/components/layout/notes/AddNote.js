@@ -24,14 +24,13 @@ const AddNote = (props) => {
   const [formErrors, setFormErrors] = useState({});
 
   const [isUpdate, setUpdate] = useState(false);
-  const [{ isLoading, snackbar }, dispatch] = useDataLayerValue();
+  const [{ isLoading }, dispatch] = useDataLayerValue();
 
   const handleEdit = () => {
     props.handleEdit();
   };
 
   const handleChange = (e) => {
-    console.log('hghgh');
     const { name, value } = e.target;
     setFormValues((prevState) => {
       return { ...prevState, [name]: value };
@@ -128,7 +127,6 @@ const AddNote = (props) => {
     const isSubmit = Object.keys(errors).length === 0;
     setFormErrors(errors);
 
-    console.log(isSubmit);
     if (isSubmit) {
       if (isUpdate) {
         updateNoteToDB();
@@ -223,6 +221,7 @@ const AddNote = (props) => {
               variant="outlined"
               color="error"
               aria-label="add to favorites"
+              disabled={isLoading}
               onClick={closeEdit}
             >
               <CloseIcon />
@@ -232,6 +231,7 @@ const AddNote = (props) => {
               color="primary"
               aria-label="share"
               type="submit"
+              disabled={isLoading}
             >
               <AddIcon />
             </IconButton>

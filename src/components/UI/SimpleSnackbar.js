@@ -1,13 +1,9 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
+import { Stack } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import { useEffect } from 'react';
+import * as React from 'react';
 import { useDataLayerValue } from '../../context-api/Datalayer';
 import { actionTypes } from '../../context-api/reducer';
-import MuiAlert from '@mui/material/Alert';
-import { Stack } from '@mui/material';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -42,7 +38,7 @@ export default function SimpleSnackbar() {
       {!snackbar.isError && (
         <Snackbar
           open={snackbar.isOpen}
-          autoHideDuration={6000}
+          autoHideDuration={3000}
           onClose={handleClose}
         >
           <Alert

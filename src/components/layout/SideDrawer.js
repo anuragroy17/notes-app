@@ -13,13 +13,11 @@ import {
   Tooltip,
 } from '@mui/material';
 import { useState } from 'react';
-import { useDataLayerValue } from '../../context-api/Datalayer';
 import { Drawer, DrawerHeader } from '../../shared/ui-themes';
 import { pageArray } from '../../shared/utils';
 
 const SideDrawer = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [{ isOpen }] = useDataLayerValue();
 
   const getNotes = (event, index) => {
     setSelectedIndex(index);
@@ -37,25 +35,25 @@ const SideDrawer = (props) => {
   };
 
   return (
-    <Drawer variant="permanent" open={isOpen}>
+    <Drawer variant="permanent" open={props.isOpen}>
       <DrawerHeader />
       <Divider />
       <List>
         <ListItem key="notes" disablePadding sx={{ display: 'block' }}>
-          <Tooltip title={isOpen ? '' : pageArray[0]} placement="right">
+          <Tooltip title={props.isOpen ? '' : pageArray[0]} placement="right">
             <ListItemButton
               selected={selectedIndex === 0}
               onClick={(event) => getNotes(event, 0)}
               sx={{
                 minHeight: 48,
-                justifyContent: isOpen ? 'initial' : 'center',
+                justifyContent: props.isOpen ? 'initial' : 'center',
                 px: 2.5,
               }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: isOpen ? 3 : 'auto',
+                  mr: props.isOpen ? 3 : 'auto',
                   justifyContent: 'center',
                 }}
               >
@@ -63,26 +61,26 @@ const SideDrawer = (props) => {
               </ListItemIcon>
               <ListItemText
                 primary={pageArray[0]}
-                sx={{ opacity: isOpen ? 1 : 0 }}
+                sx={{ opacity: props.isOpen ? 1 : 0 }}
               />
             </ListItemButton>
           </Tooltip>
         </ListItem>
         <ListItem key="archived" disablePadding sx={{ display: 'block' }}>
-          <Tooltip title={isOpen ? '' : pageArray[1]} placement="right">
+          <Tooltip title={props.isOpen ? '' : pageArray[1]} placement="right">
             <ListItemButton
               selected={selectedIndex === 1}
               onClick={(event) => getArchived(event, 1)}
               sx={{
                 minHeight: 48,
-                justifyContent: isOpen ? 'initial' : 'center',
+                justifyContent: props.isOpen ? 'initial' : 'center',
                 px: 2.5,
               }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: isOpen ? 3 : 'auto',
+                  mr: props.isOpen ? 3 : 'auto',
                   justifyContent: 'center',
                 }}
               >
@@ -90,27 +88,27 @@ const SideDrawer = (props) => {
               </ListItemIcon>
               <ListItemText
                 primary={pageArray[1]}
-                sx={{ opacity: isOpen ? 1 : 0 }}
+                sx={{ opacity: props.isOpen ? 1 : 0 }}
               />
             </ListItemButton>
           </Tooltip>
         </ListItem>
         <Divider />
         <ListItem key="trashed" disablePadding sx={{ display: 'block' }}>
-          <Tooltip title={isOpen ? '' : pageArray[2]} placement="right">
+          <Tooltip title={props.isOpen ? '' : pageArray[2]} placement="right">
             <ListItemButton
               selected={selectedIndex === 2}
               onClick={(event) => getTrashed(event, 2)}
               sx={{
                 minHeight: 48,
-                justifyContent: isOpen ? 'initial' : 'center',
+                justifyContent: props.isOpen ? 'initial' : 'center',
                 px: 2.5,
               }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: isOpen ? 3 : 'auto',
+                  mr: props.isOpen ? 3 : 'auto',
                   justifyContent: 'center',
                 }}
               >
@@ -118,7 +116,7 @@ const SideDrawer = (props) => {
               </ListItemIcon>
               <ListItemText
                 primary={pageArray[2]}
-                sx={{ opacity: isOpen ? 1 : 0 }}
+                sx={{ opacity: props.isOpen ? 1 : 0 }}
               />
             </ListItemButton>
           </Tooltip>

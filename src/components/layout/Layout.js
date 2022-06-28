@@ -11,14 +11,13 @@ import SideDrawer from './SideDrawer';
 
 const Layout = () => {
   const [notes, setNotes] = useState([]);
-  const [dataAdded, setDataAdded] = useState(false);
   const [showDeleteAll, setShowDeleteAll] = useState(false);
   const [showAddNote, setShowAddNote] = useState(true);
 
   const [fetchNotes, setFetchNotes] = useState(true);
   const [fetchArchived, setFetchArchived] = useState(false);
   const [fetchTrashed, setFetchTrashed] = useState(false);
-  const [{ isOpen, isLoading }, dispatch] = useDataLayerValue();
+  const [{ isOpen }, dispatch] = useDataLayerValue();
 
   const [user, loading] = useAuthState(auth);
   const navigate = useNavigate();
@@ -80,25 +79,28 @@ const Layout = () => {
   const fetchDataFromFireStore = useCallback(
     async (queryClause) => {
       setLoader(true);
-      const receivedNotesSnapShot = await getNotes(user?.uid, queryClause);
       const receivedNotes = [];
-      receivedNotesSnapShot.forEach((d) => {
-        const doc = d.data();
-        receivedNotes.push({
-          id: d.id,
-          title: doc.title,
-          note: doc.note,
-          date: new Date(doc.date.toDate()),
-          isNote: doc.isNote,
-          isArchived: doc.isArchived,
-          isTrashed: doc.isTrashed,
-          lastEdited: new Date(doc.lastEdited.toDate()),
+      try {
+        const receivedNotesSnapShot = await getNotes(user?.uid, queryClause);
+        receivedNotesSnapShot.forEach((d) => {
+          const doc = d.data();
+          receivedNotes.push({
+            id: d.id,
+            title: doc.title,
+            note: doc.note,
+            date: new Date(doc.date.toDate()),
+            isNote: doc.isNote,
+            isArchived: doc.isArchived,
+            isTrashed: doc.isTrashed,
+            lastEdited: new Date(doc.lastEdited.toDate()),
+          });
         });
-      });
 
-      receivedNotes.sort((a, b) => b.lastEdited - a.lastEdited);
+        receivedNotes.sort((a, b) => b.lastEdited - a.lastEdited);
+      } catch (err) {
+        console.log(err);
+      }
       setNotes(receivedNotes);
-      setDataAdded(false);
       setLoader(false);
     },
     [setLoader, user?.uid]
@@ -127,6 +129,7 @@ const Layout = () => {
         getNotes={handleGetNotes}
         getArchived={handleGetArchived}
         getTrashed={handleGetTrashed}
+        isOpen={isOpen}
       />
       <Dashboard
         onAdd={handleAdd}

@@ -32,6 +32,17 @@ const Note = (props) => {
     });
   };
 
+  const setSnackBar = (isError, message) => {
+    dispatch({
+      type: actionTypes.SET_SNACKBAR,
+      snackbar: {
+        isOpen: true,
+        isError: isError,
+        message: message,
+      },
+    });
+  };
+
   const setLocationinFS = async (locationField, flag) => {
     const locationObj = {
       isNote: false,
@@ -40,14 +51,24 @@ const Note = (props) => {
       [locationField]: flag,
     };
     setLoader(true);
-    await setLocation(locationObj, props.uid, props.id);
+    try {
+      await setLocation(locationObj, props.uid, props.id);
+    } catch (err) {
+      console.log(err);
+    }
     setLoader(false);
     props.onClick();
   };
 
   const deleteNoteFromFS = async () => {
     setLoader(true);
-    await deleteNote(props.uid, props.id);
+    try {
+      await deleteNote(props.uid, props.id);
+      setSnackBar(false, 'Note deleted.');
+    } catch (err) {
+      console.log(err);
+      setSnackBar(true, 'Deleting note failed.');
+    }
     setLoader(false);
     props.onClick();
   };
@@ -122,6 +143,7 @@ const Note = (props) => {
             <Tooltip title="Edit">
               <IconButton
                 aria-label="edit"
+                disabled={isLoading}
                 className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={editNote}
               >
@@ -134,6 +156,7 @@ const Note = (props) => {
             <Tooltip title="Archive">
               <IconButton
                 aria-label="archive"
+                disabled={isLoading}
                 className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={() => setLocationinFS('isArchived', true)}
               >
@@ -145,6 +168,7 @@ const Note = (props) => {
             <Tooltip title="Unarchive">
               <IconButton
                 aria-label="archive"
+                disabled={isLoading}
                 className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={() => setLocationinFS('isNote', true)}
               >
@@ -156,6 +180,7 @@ const Note = (props) => {
             <Tooltip title="Restore">
               <IconButton
                 aria-label="delete"
+                disabled={isLoading}
                 className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={() => setLocationinFS('isNote', true)}
               >
@@ -167,6 +192,7 @@ const Note = (props) => {
             <Tooltip title="Delete Forever">
               <IconButton
                 aria-label="delete"
+                disabled={isLoading}
                 className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={openDialog}
               >
@@ -178,6 +204,7 @@ const Note = (props) => {
             <Tooltip title="Delete">
               <IconButton
                 aria-label="delete"
+                disabled={isLoading}
                 className={isPhone ? 'show-button' : 'hidden-button'}
                 onClick={() => setLocationinFS('isTrashed', true)}
               >

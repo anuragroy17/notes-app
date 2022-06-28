@@ -20,7 +20,7 @@ import { IgnoreDisabledListItem } from '../../shared/utils';
 
 const Header = (props) => {
   const [name, setName] = useState('');
-  const [error, setError] = useState('');
+
   const [{ isDark, isOpen, isLoading }, dispatch] = useDataLayerValue();
 
   const theme = useTheme();
@@ -50,6 +50,20 @@ const Header = (props) => {
     [dispatch]
   );
 
+  const setSnackBar = useCallback(
+    (isError, message) => {
+      dispatch({
+        type: actionTypes.SET_SNACKBAR,
+        snackbar: {
+          isOpen: true,
+          isError: isError,
+          message: message,
+        },
+      });
+    },
+    [dispatch]
+  );
+
   const handleUserMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -59,20 +73,18 @@ const Header = (props) => {
   };
 
   const handleLogout = async () => {
-    setError('');
     setLoader(true);
     try {
       await logout();
     } catch (err) {
       console.log(err);
-      setError('Failed to log out');
+      setSnackBar(true, 'Failed to log out.');
     }
     setLoader(false);
   };
 
   useEffect(() => {
     const fetchUserName = async () => {
-      setError('');
       setLoader(true);
       try {
         const q = query(
@@ -84,7 +96,7 @@ const Header = (props) => {
         setName(data.name);
       } catch (err) {
         console.log(err);
-        setError('An error occured while fetching user data');
+        setSnackBar(true, 'An error occured while fetching user data.');
       }
       setLoader(false);
     };
@@ -94,7 +106,7 @@ const Header = (props) => {
     } else if (props.user?.displayName) {
       setName(props.user?.displayName);
     }
-  }, [props.user, setLoader]);
+  }, [props.user, setLoader, setSnackBar]);
 
   return (
     <AppBar

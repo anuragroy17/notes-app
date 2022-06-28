@@ -22,7 +22,7 @@ const Reset = () => {
   const [emailErrors, setEmailErrors] = useState('');
   const [isSubmit, setIsSubmit] = useState(false);
 
-  const [user, loading] = useAuthState(auth);
+  const [user, fetchingUser] = useAuthState(auth);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [{ isLoading }, dispatch] = useDataLayerValue();
@@ -88,14 +88,14 @@ const Reset = () => {
   }, [email, emailErrors, isSubmit, setLoader]);
 
   useEffect(() => {
-    if (loading) {
+    if (fetchingUser) {
       setLoader(true);
       return;
     }
 
     setLoader(false);
-    if (user) navigate('/dashboard');
-  }, [user, loading, navigate, setLoader]);
+    if (user) navigate('/notes');
+  }, [user, fetchingUser, navigate, setLoader]);
 
   return (
     <LoginContainer>
@@ -136,7 +136,7 @@ const Reset = () => {
         <Button
           fullWidth
           variant="contained"
-          disabled={loading}
+          disabled={fetchingUser || isLoading}
           type="submit"
           sx={{ mt: 2, mb: 2 }}
           disableElevation

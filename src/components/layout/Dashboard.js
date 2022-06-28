@@ -85,10 +85,27 @@ const Dashboard = (props) => {
     });
   };
 
+  const setSnackBar = (isError, message) => {
+    dispatch({
+      type: actionTypes.SET_SNACKBAR,
+      snackbar: {
+        isOpen: true,
+        isError: isError,
+        message: message,
+      },
+    });
+  };
+
   const deleteAll = async () => {
     setLoader(true);
     const ids = props.notes.map((n) => n.id);
-    await deleteMultiple(ids, props.uid);
+    try {
+      await deleteMultiple(ids, props.uid);
+      setSnackBar(false, 'All notes deleted.');
+    } catch (err) {
+      console.log(err);
+      setSnackBar(true, 'Deleting notes failed.');
+    }
     setLoader(false);
     props.getTrashed();
   };
@@ -162,6 +179,7 @@ const Dashboard = (props) => {
               aria-label="delete-all"
               onClick={openDialog}
               sx={{ position: 'fixed', right: 15, bottom: 15 }}
+              disabled={isLoading}
             >
               <RemoveCircleOutlineIcon />
             </Fab>

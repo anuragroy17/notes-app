@@ -1,6 +1,5 @@
-import { Button, FormControlLabel, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import { Box, Container } from '@mui/system';
-import React from 'react';
 import { useDataLayerValue } from '../../context-api/Datalayer';
 import { actionTypes } from '../../context-api/reducer';
 import { DarkModeSwitch } from '../../shared/ui-themes';
@@ -19,6 +18,7 @@ const LoginContainer = (props) => {
 
   return (
     <Container
+      className={classes}
       component="main"
       maxWidth="xs"
       sx={{
