@@ -10,11 +10,15 @@ import {
   Grid,
   Button,
   Avatar,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginContainer from '../UI/LoginContainer';
 import { useDataLayerValue } from '../../context-api/Datalayer';
 import { actionTypes } from '../../context-api/reducer';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const Register = () => {
   const initialValues = {
@@ -27,11 +31,20 @@ const Register = () => {
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [error, setError] = useState('');
   const [user, fetchingUser] = useAuthState(auth);
   const [{ isLoading }, dispatch] = useDataLayerValue();
   const navigate = useNavigate();
+
+  const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+  const handleMouseDownPassword = () => setShowPassword((prev) => !prev);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((prev) => !prev);
+  const handleMouseDownConfirmPassword = () =>
+    setShowConfirmPassword((prev) => !prev);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -191,11 +204,25 @@ const Register = () => {
           size="small"
           name="password"
           label="Password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           id="password"
           value={formValues.password}
           onChange={handleChange}
           autoComplete="current-password"
+          InputProps={{
+            // <-- This is where the toggle button is added.
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <TextField
           error={
@@ -208,11 +235,25 @@ const Register = () => {
           size="small"
           name="passwordConfirm"
           label="Confirm Password"
-          type="password"
+          type={showConfirmPassword ? 'text' : 'password'}
           id="password-confirm"
           value={formValues.passwordConfirm}
           onChange={handleChange}
           autoComplete="current-password"
+          InputProps={{
+            // <-- This is where the toggle button is added.
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowConfirmPassword}
+                  onMouseDown={handleMouseDownConfirmPassword}
+                >
+                  {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <Button
           fullWidth

@@ -8,6 +8,8 @@ import {
   Grid,
   TextField,
   Typography,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -20,6 +22,8 @@ import {
   signInWithGoogle,
 } from '../../firebase';
 import LoginContainer from '../UI/LoginContainer';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const Login = () => {
   const initialValues = {
@@ -30,11 +34,15 @@ const Login = () => {
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [error, setError] = useState('');
   const [user, fetchingUser] = useAuthState(auth);
   const [{ isLoading }, dispatch] = useDataLayerValue();
   const navigate = useNavigate();
+
+  const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+  const handleMouseDownPassword = () => setShowPassword((prev) => !prev);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -179,11 +187,25 @@ const Login = () => {
           size="small"
           name="password"
           label="Password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           id="password"
           value={formValues.password}
           onChange={handleChange}
           autoComplete="current-password"
+          InputProps={{
+            // <-- This is where the toggle button is added.
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <Button
           type="submit"
